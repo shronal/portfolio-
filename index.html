@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shronal</title>
+    <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
+    <link rel="stylesheet" href="style.css">
+    <!----Font awesome cdn  font icon css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+</head>
+<body>
+     <div class="hero-header">
+        <div class="wrapper">
+            <header>
+                <div class="logo">
+                    <i class="fa-solid fa-s"></i>
+                    <div class="logo-text">Shronal Duwal</div>
+                </div>
+                <nav>
+                    <div class="togglebtn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                     <!-- <ul class="navlinks">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="project.html">Projects</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                    </ul>  -->
+                </nav>
+            </header>
+            <div class="container">
+                 <div class="hero-pic">
+                    <img src="images/image.png" alt="profile pic">
+                 </div>
+                 <div class="hero-text">
+                    <h5>Hi I'm <span class="input">Frontend Developer</span></h5>
+                    <h1>Shronal</h1>
+                    <p> A dedicated and results-driven computer engineering
+                        student with experience in project development,
+                        programming. Skilled in Django, C++,
+                        and web development !
+                    </p>
+                    <div class="btn-group">
+                       <a href="doc/cv.pdf" class="btn active" download>Download CV</a>
+                       <a href="https://wa.me/9779861287028?text=Hi Shronal, More Information !" class="btn">Contact</a>
+                       <br>
+                       <br>
+                       <br><br>
+                       <a href="project.html" class="btn">Projects</a>
+                    </div>
+
+                    <div class="social">
+                        <a href="https://www.facebook.com/shronalduwal"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="https://www.instagram.com/shronalduwal/"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://github.com/shronal"><i class="fa-brands fa-github"></i></a>
+                        <!-- <a href="#"><i class="fa-brands fa-pintrest"></i></a> -->
+                    </div>
+                 </div>
+            </div>
+        </div>
+     </div>
+     <!---typed js for typing text effect-->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.10/typed.min.js"></script>
+     <script>
+        /** creating button click show hide navbar **/
+        var togglebtn=document.querySelector(".togglebtn");
+        var nav=document.querySelector(".navlinks");
+        var links=document.querySelector(".navlinks li");
+
+        togglebtn.addEventListener("click", function(){
+            this.classList.toggle("click");
+            nav.classList.toggle("open");
+        })
+
+        var typed=new Typed(".input",{
+            strings:["Frontend Developer","UX Designer","Web Developer"],
+            typedSpeed:70,
+            backSpeed:55,
+            loop:true
+        })
+     </script>
+</body>
+</html>
