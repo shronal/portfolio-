@@ -223,6 +223,7 @@ nav .navlinks li a:hover::after {
         right:0;
     }
 }
+
 @media(max-width:768px)
 {
     .container{
