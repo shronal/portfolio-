@@ -8,6 +8,27 @@
 body {
     overflow-x: hidden;
 }
+.cursor-dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: cyan;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 0 5px cyan, 0 0 10px cyan;
+    animation: fadeOut 0.5s linear forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
 
 .hero-header{
     width:100%;

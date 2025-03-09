@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shronal</title>
+    <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+</head>
+<body>
+    <script src="script.js"></script>
+     <div class="hero-header">
+        <div class="wrapper">
+            <header>
+                <div class="logo">
+                    <a href="https://www.shronal.com.np">
+                        <i class="fa-solid fa-s"></i>
+                      </a>
+                    <div class="logo-text">Shronal Duwal</div>
+                </div>
+                <nav>
+                    <div class="togglebtn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                     <ul class="navlinks">
+                        <li><a href="https://www.shronal.com.np">Home</a></li>
+                        <li><a href="project.html">Projects</a></li>
+                    </ul> 
+                </nav>     
+        </div>
+        <h1 style="color: #40c4c4; text-align: center; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">The Retrieval Hub
+            <br> Will be updated soon.....
+        </h1>
+    </div>
+</body>
+</html>
+
+<style>
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+    padding-top: 4rem;
+}
+.description-box {
+    width: 50%;
+    padding: 20px;
+}
+
+.slideshow {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+.slideshow img {
+    width: 100%;
+    display: none;
+    transition: opacity 1s ease-in-out;
+}
+.slideshow img:first-child {
+    display: block;
+}
+.description {
+    width: 50%;
+}
+.description p, .description ul {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+.description ul {
+    list-style: none;
+}
+.description ul li {
+    margin-bottom: 10px;
+}
+.source-code-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 15px;
+    background: #40c4c4;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+</style>
+
+<script>
+let currentIndex = 0;
+const images = document.querySelectorAll('.slideshow img');
+function showNextImage() {
+    images[currentIndex].style.display = 'none';
+    currentIndex = (currentIndex + 1) % images.length;
+    images[currentIndex].style.display = 'block';
+}
+setInterval(showNextImage, 3000);
+</script>
