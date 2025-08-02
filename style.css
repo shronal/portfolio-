@@ -255,3 +255,28 @@ nav .navlinks li a:hover::after {
         padding:40px 0px;
     }
 }
+
+.site-footer {
+  background-color: #111;
+  padding: 20px 0;
+  color: #e5e5e5;
+  font-size: 14px;
+  text-align: center;
+  border-top: 1px solid #333;
+  margin-top: 4rem;
+}
+
+.footer-content a {
+  color: #40c4c4;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-content a:hover {
+  color: #fff;
+}
+
+.footer-content .highlight {
+  color: #40c4c4;
+  font-weight: 600;
+}
