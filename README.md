@@ -12,7 +12,7 @@ This repository contains the source code for my **personal portfolio website**, 
 ✅ **Fully Mobile Friendly**  
 
 ## 🚀 Live Preview  
-Visit the website: **[shronal.com.np](https://shronal.com.np/)**  
+Visit the site: **[shronal.com.np](https://shronal.com.np/)**  
 
 ## 🛠 Tech Stack  
 - **Frontend:** HTML, CSS, JavaScript  
