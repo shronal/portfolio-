@@ -9,7 +9,7 @@ This repository contains the source code for my **personal portfolio website**, 
 ✅ **Projects Showcase**  
 ✅ **Skills & Technologies**  
 ✅ **Contact Form & Social Links**  
-✅ **Fully Mobile-Friendly**  
+✅ **Fully Mobile Friendly**  
 
 ## 🚀 Live Preview  
 Visit the website: **[shronal.com.np](https://shronal.com.np/)**  
