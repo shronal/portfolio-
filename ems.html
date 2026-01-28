@@ -1,69 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Ongoing Project</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
-  <style>
-    .project-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      background-color: #222;
-      color: #e5e5e5;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .project-section h1 {
-      font-size: 3rem;
-      color: #40c4c4;
-      margin-bottom: 1rem;
-    }
-
-    .project-section p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-    }
-
-    .project-link {
-      display: inline-block;
-      padding: 12px 25px;
-      background-color: #333;
-      color: #fff;
-      border: 2px solid #40c4c4;
-      border-radius: 30px;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      box-shadow: 0 10px 10px -8px rgb(0 0 0 / 78%);
-    }
-
-    .project-link:hover {
-      background-color: #40c4c4;
-      color: #222;
-    }
-
-    @media (max-width: 600px) {
-      .project-section h1 {
-        font-size: 2.2rem;
-      }
-      .project-section p {
-        font-size: 1rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shronal</title>
+    <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
 <body>
-  <section class="project-section">
-    <h1>🚧 Ongoing Project</h1>
-    <p>We're building something awesome. Check out the progress below.</p>
-    <a class="project-link" href="https://github.com/shronal/khec_ems" target="_blank">
-      View on GitHub
-    </a>
-  </section>
+    <script src="script.js"></script>
+     <div class="hero-header">
+        <div class="wrapper">
+            <header>
+                <div class="logo">
+                    <a href="https://www.shronal.com.np">
+                        <i class="fa-solid fa-s"></i>
+                      </a>
+                    <div class="logo-text">Shronal Duwal</div>
+                </div>
+                <nav>
+                    <div class="togglebtn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                     <ul class="navlinks">
+                        <li><a href="https://www.shronal.com.np">Home</a></li>
+                        <li><a href="project.html">Projects</a></li>
+                    </ul> 
+                </nav>     
+        </div>
+     
+     <div class="container">
+    <div class="description" style="color: aliceblue;">
+        <h1 style="color: #40c4c4;">KhEC Event Flow – Event Management System</h1><br>
+
+        <p style="color: aliceblue;">
+            KhEC Event Flow is a web-based Event Management System developed to manage college-level
+            events efficiently. The system supports multiple roles such as Admin, Organizer, and User,
+            enabling event creation, registration, approval, and tracking in a structured manner.
+        </p>
+
+        <h3>🔧 Tech Stack:</h3>
+        <ul>
+            <li>Python (Django)</li>
+            <li>HTML, CSS, JavaScript</li>
+            <li>SQLite / PostgreSQL</li>
+            <li>Bootstrap</li>
+        </ul>
+
+        <p>
+            This project was developed as part of my academic coursework for the
+            Bachelor's degree in Computer Engineering at Khwopa Engineering College.
+        </p>
+
+        <div class="btn-group">
+            <a href="https://github.com/shronal/ems_app" class="btn active">Source Code</a>
+        </div>
+    </div>
+
+    <div class="report-box" style="height: auto; width: 50%;">
+        <div class="slideshow">
+            <img src="images/ems/ems1.jpg" alt="ems1">
+            <img src="images/ems/ems2.jpg" alt="ems2">
+            <img src="images/ems/ems3.jpg" alt="ems3">
+            <img src="images/ems/ems4.jpg" alt="ems4">
+            <img src="images/ems/ems5.jpg" alt="ems5">
+            <img src="images/ems/ems6.jpg" alt="ems6">
+            <img src="images/ems/ems7.jpg" alt="ems7">
+            <img src="images/ems/ems8.jpg" alt="ems8">
+        </div>
+    </div>
+</div>
+
+    </div>
 </body>
 </html>
+
+<style>
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+    padding-top: 4rem;
+}
+.description-box {
+    width: 50%;
+    padding: 20px;
+}
+
+.slideshow {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+.slideshow img {
+    width: 100%;
+    display: none;
+    transition: opacity 1s ease-in-out;
+}
+.slideshow img:first-child {
+    display: block;
+}
+.description {
+    width: 50%;
+}
+.description p, .description ul {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+.description ul {
+    list-style: none;
+}
+.description ul li {
+    margin-bottom: 10px;
+}
+
+</style>
+
+<script>
+let currentIndex = 0;
+const images = document.querySelectorAll('.slideshow img');
+function showNextImage() {
+    images[currentIndex].style.display = 'none';
+    currentIndex = (currentIndex + 1) % images.length;
+    images[currentIndex].style.display = 'block';
+}
+setInterval(showNextImage, 3000);
+</script>
