@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Rose Day Mrs Winchy</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #ff3e6c, #ff8fab);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Segoe UI', sans-serif;
+        overflow: hidden;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(14px);
+        border-radius: 30px;
+        padding: 55px 70px;
+        text-align: center;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        color: #fff;
+        animation: fadeZoom 2s ease;
+        z-index: 2;
+    }
+
+    h1 {
+        font-size: 3.3em;
+        margin-bottom: 10px;
+        text-shadow: 0 0 18px rgba(255,255,255,0.7);
+    }
+
+    p {
+        font-size: 1.35em;
+        line-height: 1.7;
+    }
+
+    .name {
+        font-weight: bold;
+        color: #fff0f6;
+        text-shadow: 0 0 12px #ffd1dc;
+    }
+
+    .rose {
+        font-size: 4.2em;
+        animation: float 3s ease-in-out infinite;
+        margin-bottom: 15px;
+    }
+
+    button {
+        margin-top: 25px;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 30px;
+        background: #fff;
+        color: #ff3e6c;
+        font-size: 1em;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        transition: 0.3s;
+    }
+
+    button:hover {
+        transform: scale(1.08);
+    }
+
+    @keyframes float {
+        0%,100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+
+    @keyframes fadeZoom {
+        from { opacity: 0; transform: scale(0.85); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    .fall span {
+        position: absolute;
+        font-size: 2.2em;
+        animation: fall 7s linear infinite;
+        opacity: 0.9;
+    }
+
+    @keyframes fall {
+        0% {
+            transform: translateY(-10vh) rotate(0deg);
+            opacity: 0;
+        }
+        10% { opacity: 1; }
+        100% {
+            transform: translateY(110vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+</style>
+</head>
+
+<body onclick="playMusic()">
+
+<!-- Falling roses & hearts -->
+<div class="fall">
+    <span style="left:5%; animation-delay:0s;">🌹</span>
+    <span style="left:15%; animation-delay:2s;">❤️</span>
+    <span style="left:30%; animation-delay:4s;">🌸</span>
+    <span style="left:45%; animation-delay:1s;">💖</span>
+    <span style="left:60%; animation-delay:3s;">🌹</span>
+    <span style="left:75%; animation-delay:5s;">❤️</span>
+    <span style="left:90%; animation-delay:2s;">🌸</span>
+</div>
+
+<!-- Main Card -->
+<div class="card">
+    <div class="rose">🌹</div>
+    <h1>Happy Rose Day</h1>
+    <p>
+        A rose for love,<br>
+        a rose for care,<br>
+        a rose just for <span class="name">Mrs Winchy</span> 💕<br><br>
+        You make every moment bloom 🌹
+    </p>
+
+    <button onclick="playMusic()">🎶 Play Music</button>
+</div>
+
+<!-- Romantic Music -->
+<audio id="bgMusic" autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9c8e7b59c7.mp3" type="audio/mp3">
+</audio>
+
+<script>
+    function playMusic() {
+        const music = document.getElementById("bgMusic");
+        music.play().catch(() => {
+            // autoplay fallback handled by user interaction
+        });
+    }
+</script>
+
+</body>
+</html>
