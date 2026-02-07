@@ -89,11 +89,12 @@ button:hover { transform: scale(1.08); }
 
 <script>
 const pages = [
-    "I have something to ask you... 😘",
-    "Will you wait for tomorrow? 💍💕",
-    "Haha just kidding! But I do have something special to tell you... 💫",
-    "That ......",
-    "Voli aaunus husss ??",
+    "Hey you… 💫",
+    "I have something really special to tell you 💕",
+    "Every moment with you feels magical 🌹",
+    "Your smile… your laugh… everything about you… ✨",
+    "And today… I want to ask you something…",
+    "Will you be mine… forever? 💖❤️"
 ];
 
 let index = 0;
@@ -125,8 +126,15 @@ btn.addEventListener("click", () => {
         index++;
 
         // When reaching the last page
-        
-        
+        if(index === pages.length) {
+            // Change button to WhatsApp link
+            const phoneNumber = "9861287028"; // Replace with her number, with country code, no '+'
+            const message = encodeURIComponent("Yes! I said YES 💖🎉"); // Pre-filled message
+            btn.innerText = "💍 Reply on WhatsApp";
+            btn.onclick = () => {
+                window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+            };
+        }
     }
 });
 
