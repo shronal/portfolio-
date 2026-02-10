@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Teddy Day</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #ffb6c1, #ffe4e1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      border-radius: 25px;
+      padding: 35px 30px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      animation: popIn 1.5s ease;
+      max-width: 380px;
+      z-index: 2;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    h1 {
+      color: #ff4081;
+      font-size: 2.2em;
+      margin-bottom: 10px;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #ff8fab; }
+      to { text-shadow: 0 0 15px #ff4081; }
+    }
+
+    .teddy {
+      font-size: 90px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .message {
+      color: #555;
+      font-size: 1.05em;
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+
+    .virtual {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #ff4081;
+      font-size: 1.1em;
+    }
+
+    .from {
+      margin-top: 20px;
+      font-style: italic;
+      color: #ff4081;
+    }
+
+    .heart {
+      position: absolute;
+      color: rgba(255, 64, 129, 0.7);
+      font-size: 20px;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(100vh) scale(1);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-10vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🎵 Background Music -->
+  <audio autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="card">
+    <div class="teddy">🧸</div>
+    <h1>Happy Teddy Day!</h1>
+
+    <div class="message">
+      A teddy is not just a toy, it’s a hug you can hold forever 🤗
+    </div>
+
+    <div class="message">
+      Whenever you feel low, imagine this teddy holding you tight 💕
+    </div>
+
+    <div class="message">
+      May your life be filled with warmth, smiles, and endless love ✨
+    </div>
+
+    <div class="virtual">
+      🧸 This is a virtual teddy for you 🧸
+    </div>
+
+    <div class="message">
+      Sending you all the cuddles, comfort, and care today and always 💖
+    </div>
+
+    <div class="from">
+      With lots of love 💞
+    </div>
+  </div>
+
+  <script>
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 6000);
+    }
+
+    setInterval(createHeart, 300);
+  </script>
+
+</body>
+</html>
