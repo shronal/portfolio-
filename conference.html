@@ -1,75 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Shronal | Conference Participation</title>
-        <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
-        <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="project.css">
-        <!----Font awesome cdn  font icon css -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
-    </head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retrieval Hub</title>
+  <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
+  <link rel="stylesheet" href="style.css">
+ <link rel="stylesheet" href="project.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
   <style>
-    .container { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      width: 80%; 
-      margin: auto; 
-      padding-top: 4rem; 
-      gap: 40px;
-    }
-
-    .description { 
-      width: 50%; 
-      color: aliceblue; 
-    }
-
-    .description ul { 
-      list-style: none; 
-      padding: 0;
-    }
-
-    .description ul li { 
-      margin-bottom: 10px; 
-    }
-
-    .slideshow {
-      width: 50%;
-      position: relative;
-      overflow: hidden;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-
-    .slideshow img {
-      width: 100%;
-      display: none;
-      transition: opacity 1s ease-in-out;
-    }
-
-    .slideshow img.active {
-      display: block;
-    }
-
-    @media(max-width: 768px){
-      .container{
-        flex-direction: column;
-        width: 90%;
-      }
-
-      .description,
-      .slideshow{
-        width: 100%;
-      }
-    }
+    .container { display: flex; justify-content: space-between; align-items: center; width: 80%; margin: auto; padding-top: 4rem; }
+    .description { width: 50%; color: aliceblue; }
+    .description ul { list-style: none; }
+    .description ul li { margin-bottom: 10px; }
+    .slideshow { width: 100%; display: flex; overflow: hidden; position: relative; }
+    .slideshow img { width: 100%; display: none; transition: opacity 1s ease-in-out; }
+    .slideshow img:first-child { display: block; }
   </style>
 </head>
-
 <body>
-
   <div class="hero-header">
     <div class="wrapper">
       <header>
@@ -82,38 +31,28 @@
             <span></span><span></span><span></span>
           </div>
           <ul class="navlinks">
-            <li><a href="https://www.shronal.com.np">Home</a></li>
-            <li><a href="project.html">Projects</a></li>
-            <li><a href="exposure.html">Exposure</a></li>
-          </ul> 
+                <li><a href="https://www.shronal.com.np">Home</a></li>
+                <li><a href="project.html">Projects</a></li>
+                <li><a href="exposure.html">Exposure</a></li>
+                </ul> 
         </nav>
       </header>
     </div>
 
     <div class="container">
-      
-      <!-- LEFT DESCRIPTION -->
       <div class="description">
-        <h1 style="color: #40c4c4;">
-          National Conference on Computer, Electrical,
-Electronics and Communication Engineering (KHWOPA CEEL 2026)
-        </h1><br>
-
-        <p>
-          Participated in the national-level CEEL conference organized by Khwopa Engineering College.
-        </p>
-
+        <h1 style="color: #40c4c4;">National Conference on Computer, Electrical,
+         Electronics and Communication Engineering (KHWOPA CEEL 2026)</h1><br>
+        <p>Participated in the national-level CEEL conference organized by Khwopa Engineering College.</p>
         <h3>🎯 Focus Areas:</h3>
         <ul>
           <li>Engineering Education Innovation</li>
           <li>Research & Academic Collaboration</li>
           <li>Modern Teaching & Learning Practices</li>
         </ul>
-
         <p>
           Engaged in insightful keynote sessions, research discussions, and networking with academicians and professionals from various institutions.
         </p>
-
         <div class="btn-group">
           <a href="https://ceel.khwopaconference.com/" target="_blank" class="btn active">
             View Conference Website
@@ -121,28 +60,67 @@ Electronics and Communication Engineering (KHWOPA CEEL 2026)
         </div>
       </div>
 
-      <!-- RIGHT SLIDESHOW -->
-      <div class="slideshow">
-        <img src="images/conf1.jpg" class="active" alt="Conference Image 1">
-        <img src="images/conf2.jpg" alt="Conference Image 2">
-        <img src="images/conf3.jpg" alt="Conference Image 3">
-      </div>
-
+          <div class="report-box" style="height: auto; width: 50%;">
+            <div class="slideshow">
+                <img src="images/conference/img1.jpeg" alt="Conference Image 1">
+                <img src="images/conference/img2.jpeg" alt="Conference Image 2">
+            </div>
+        </div>
     </div>
   </div>
-
-  <script>
-    let currentIndex = 0;
-    const images = document.querySelectorAll('.slideshow img');
-
-    function showNextImage() {
-      images[currentIndex].classList.remove('active');
-      currentIndex = (currentIndex + 1) % images.length;
-      images[currentIndex].classList.add('active');
-    }
-
-    setInterval(showNextImage, 3000);
-  </script>
-
 </body>
 </html>
+<style>
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+    padding-top: 4rem;
+}
+.description-box {
+    width: 50%;
+    padding: 20px;
+}
+
+.slideshow {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+.slideshow img {
+    width: 100%;
+    display: none;
+    transition: opacity 1s ease-in-out;
+}
+.slideshow img:first-child {
+    display: block;
+}
+.description {
+    width: 50%;
+}
+.description p, .description ul {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+.description ul {
+    list-style: none;
+}
+.description ul li {
+    margin-bottom: 10px;
+}
+
+</style>
+
+<script>
+let currentIndex = 0;
+const images = document.querySelectorAll('.slideshow img');
+function showNextImage() {
+    images[currentIndex].style.display = 'none';
+    currentIndex = (currentIndex + 1) % images.length;
+    images[currentIndex].style.display = 'block';
+}
+setInterval(showNextImage, 3000);
+</script>
