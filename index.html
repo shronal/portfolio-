@@ -2,97 +2,342 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shronal</title>
-    <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
-    <link rel="stylesheet" href="style.css">
-    <!----Font awesome cdn  font icon css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <script src="script.js"></script>
-     <div class="hero-header">
-        <div class="wrapper">
-            <header>
-                <div class="logo">
-                    <a href="https://www.shronal.com.np">
-                        <i class="fa-solid fa-s"></i>
-                      </a>
-                    <div class="logo-text">Shronal Duwal</div>
+    <!-- HEADER -->
+    <header>
+        <div class="logo-text" >Shronal</div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#projects">Projects</a>
+            <a href="#skills">Skills</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text fade-in">
+                <h5>Welcome to my portfolio</h5>
+                <h1>Shronal Duwal</h1>
+                <p>A dedicated computer engineering student with expertise in Frontend Development, UX Design, and Web Development. Skilled in Django, C++, and modern web technologies.</p>
+                <div class="btn-group">
+                    <a href="#contact" class="btn primary">Get In Touch</a>
+                    <a href="#projects" class="btn secondary">View My Work</a>
                 </div>
-                <nav>
-                    <div class="togglebtn">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                     <ul class="navlinks">
-                        <li><a href="https://www.shronal.com.np">Home</a></li>
-                        <li><a href="project.html">Projects</a></li>
-                        <li><a href="exposure.html">Exposure</a></li>
-                    </ul> 
-                </nav>
-            </header>
-            <div class="container">
-                 <div class="hero-pic">
-                    <img src="images/image.png" alt="profile pic">
-                 </div>
-                 
-                 <div class="hero-text">
-                    <h5>Hi I'm <span class="input">Frontend Developer</span></h5>
-                    <h1>Shronal</h1>
-                    <p> A dedicated and results-driven computer engineering
-                        student with experience in project development,
-                        programming. Skilled in Django, C++,
-                        and web development !
-                    </p>
-                    <div class="btn-group">
-                       <a href="doc/resume_shronal.pdf" class="btn active" download>Download Resume</a>
-                       <a href="https://wa.me/9779861287028?text=Hi Shronal, More Information !" class="btn">Contact</a>
-                    </div>
-                    <div class="social">
-                        <a href="https://www.facebook.com/shronalduwal"><i class="fa-brands fa-facebook"></i></a>
-                        <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/"><i class="fa-brands fa-linkedin"></i></a>
-                        <a href="https://www.instagram.com/shronalduwal/"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://github.com/shronal"><i class="fa-brands fa-github"></i></a>
-                        <!-- <a href="#"><i class="fa-brands fa-pintrest"></i></a> -->
-                    </div>
-
- 
-
-                 </div>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/shronalduwal" target="_blank" title="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/" target="_blank" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://www.instagram.com/shronalduwal/" target="_blank" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://github.com/shronal" target="_blank" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
             </div>
-                               <!-- <footer class="site-footer">
-  <div class="wrapper footer-content">
-    <p>&copy; 2025 <span class="highlight">Shronal Duwal</span>. All rights reserved.</p>
-    <p>Built by <a href="https://shronal.com.np/" target="_blank">Shronal </a></p>
-  </div>
-</footer> -->
+            <div class="hero-image fade-in">
+                <i class="fas fa-user-circle"></i>
+            </div>
         </div>
-     </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
+    <section class="projects" id="projects">
+        <h2 class="section-title">Featured Projects</h2>
+        <p class="section-subtitle">Explore my recent work and projects built with modern technologies</p>
+        
+        <div class="projects-grid">
+
+            <!-- Project 1 -->
+            <div class="project-card fade-in">
+                <div class="project-header">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">The Protfolio Website</h3>
+                    <p class="project-desc">A responsive portfolio website showcasing my projects and skills in web development.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="tech-tag">HTML/CSS</span>
+                    </div>
+                    <a href="https://github.com/shronal/protfolio/" target="_blank" class="project-link">View Code →</a>
+                </div>
+            </div>
 
 
+            <!-- Project 2 -->
+            <div class="project-card fade-in">
+                <div class="project-header">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">The Retrieval Hub</h3>
+                    <p class="project-desc">A comprehensive lost and found web application allowing users to post, search, and claim lost or found items.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Django</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">HTML/CSS</span>
+                    </div>
+                    <a href="https://github.com/shronal/retrieval_hub/" target="_blank" class="project-link">View Code →</a>
+                </div>
+            </div>
 
-     <!---typed js for typing text effect-->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.10/typed.min.js"></script>
-     <script>
-        /** creating button click show hide navbar **/
-        var togglebtn=document.querySelector(".togglebtn");
-        var nav=document.querySelector(".navlinks");
-        var links=document.querySelector(".navlinks li");
+            <!-- Project 3 -->
+            <div class="project-card fade-in">
+                <div class="project-header">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Hotel Guest Vehicle Reservation</h3>
+                    <p class="project-desc">A C++ graphics-based reservation system for managing vehicle bookings in hotels with interactive GUI.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">C++</span>
+                        <span class="tech-tag">Graphics.h</span>
+                        <span class="tech-tag">DSA</span>
+                    </div>
+                    <a href="https://github.com/shronal/reservationsystem/" target="_blank" class="project-link">View Code →</a>
+                </div>
+            </div>
 
-        togglebtn.addEventListener("click", function(){
-            this.classList.toggle("click");
-            nav.classList.toggle("open");
-        })
+            <!-- Project 4 -->
+            <div class="project-card fade-in">
+                <div class="project-header">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Tree Traversal Visualizer</h3>
+                    <p class="project-desc">An interactive DSA visualizer demonstrating binary tree traversals (In-order, Pre-order, Post-order) with graphics.h</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">C++</span>
+                        <span class="tech-tag">Graphics</span>
+                        <span class="tech-tag">DSA</span>
+                    </div>
+                    <a href="https://github.com/shronal/tree_traversal" target="_blank" class="project-link">View Code →</a>
+                </div>
+            </div>
 
-        var typed=new Typed(".input",{
-            strings:["Frontend Developer","UX Designer","Web Developer"],
-            typedSpeed:70,
-            backSpeed:55,
-            loop:true
-        })
-     </script>
+            <!-- Project 5 -->
+            <div class="project-card fade-in">
+                <div class="project-header">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Book Exchange Platform</h3>
+                    <p class="project-desc">A Django-based platform for students to donate, borrow, and exchange books within the community.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Django</span>
+                        <span class="tech-tag">SQLite</span>
+                        <span class="tech-tag">Bootstrap</span>
+                    </div>
+                    <a href="https://github.com/shronal/book_exchange" target="_blank" class="project-link">View Code →</a>
+                </div>
+            </div>
+
+            <!-- Project 6 -->
+            <div class="project-card fade-in">
+                <div class="project-header">
+                    <i class="fas fa-calendar"></i>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">KhEC Event Flow</h3>
+                    <p class="project-desc">A comprehensive event management system for college-level events with admin, organizer, and user roles.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Django</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">Bootstrap</span>
+                    </div>
+                    <a href="https://github.com/shronal/khec_ems" target="_blank" class="project-link">View Code →</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- EXPOSURE -->
+    <section class="about" id="about">
+        <h2 class="section-title">Exposure</h2>
+        <div class="project-card fade-in">
+                <div class="project-header">
+                    <i class="fas fa-microphone"></i>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Khwopa CEEL 2026</h3>
+                    <p class="project-desc">Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Networking</span>
+                        <span class="tech-tag">Research</span>
+                        <span class="tech-tag">Engineering</span>
+                    </div>
+                    <a href="https://ceel.khwopaconference.com/" target="_blank" class="project-link">Conference Site →</a>
+                </div>
+            </div>
+    </section>
+
+    <!-- SKILLS SECTION -->
+    <section class="skills" id="skills">
+        <h2 class="section-title">Skills & Expertise</h2>
+        <p class="section-subtitle">Technologies and tools I work with</p>
+        
+        <div class="skills-grid">
+            <div class="skill-box fade-in">
+                <h3 class="skill-title">Frontend Development</h3>
+                <ul class="skill-list">
+                    <li>HTML5 & CSS3</li>
+                    <li>JavaScript</li>
+                    <li>Responsive Design</li>
+                    <li>Bootstrap</li>
+                    <li>UI/UX Design</li>
+                </ul>
+            </div>
+
+            <div class="skill-box fade-in">
+                <h3 class="skill-title">Backend Development</h3>
+                <ul class="skill-list">
+                    <li>Django Framework</li>
+                    <li>Python Programming</li>
+                    <li>PostgreSQL</li>
+                    <li>SQLite</li>
+                    <li>RESTful APIs</li>
+                </ul>
+            </div>
+
+            <div class="skill-box fade-in">
+                <h3 class="skill-title">Programming Languages</h3>
+                <ul class="skill-list">
+                    <li>C++</li>
+                    <li>Python</li>
+                    <li>JavaScript</li>
+                    <li>Data Structures</li>
+                    <li>Algorithms</li>
+                </ul>
+            </div>
+
+            <div class="skill-box fade-in">
+                <h3 class="skill-title">Tools & Technologies</h3>
+                <ul class="skill-list">
+                    <li>Git & GitHub</li>
+                    <li>Visual Studio Code</li>
+                    <li>Dev C++</li>
+                    <li>Graphics.h</li>
+                    <li>Command Line</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about" id="about">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-content">
+            <div class="about-text fade-in">
+                <h3>Who Am I?</h3>
+                <p>I'm a passionate computer engineering student from Nepal, currently pursuing my Bachelor's degree at Khwopa Engineering College. I have a strong interest in web development, UI/UX design, and software engineering.</p>
+                
+                <h3 style="margin-top: 2rem;">My Journey</h3>
+                <p>Over the past few years, I've worked on various projects ranging from C++ desktop applications to full-stack Django web applications. I believe in continuous learning and staying updated with the latest technologies in the field.</p>
+                
+                <h3 style="margin-top: 2rem;">What Drives Me</h3>
+                <p>I'm driven by the passion to create meaningful digital solutions that solve real-world problems. I enjoy collaborating with others and contributing to open-source projects that benefit the community.</p>
+            </div>
+            <div class="about-image fade-in">
+                <i class="fas fa-laptop-code"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="contact" id="contact">
+        <h2>Let's Work Together</h2>
+        <p>I'm always interested in hearing about new projects and opportunities. Feel free to reach out!</p>
+        
+        <div class="contact-links">
+            <a href="https://wa.me/9779861287028?text=Hi Shronal, I would like to connect with you!" target="_blank" class="contact-link">
+                <i class="fab fa-whatsapp"></i>
+                WhatsApp
+            </a>
+            <a href="mailto:shronalduwal999@gmail.com" class="contact-link">
+                <i class="fas fa-envelope"></i>
+                Email
+            </a>
+            <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/" target="_blank" class="contact-link">
+                <i class="fab fa-linkedin"></i>
+                LinkedIn
+            </a>
+            <a href="https://github.com/shronal" target="_blank" class="contact-link">
+                <i class="fab fa-github"></i>
+                GitHub
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2025 Shronal Duwal. All rights reserved. | Built with HTML, CSS & JavaScript</p>
+    </footer>
+
+    <script>
+        // Dark mode toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        // Check for saved theme preference or default to light mode
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            htmlElement.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', function() {
+            htmlElement.classList.toggle('dark-mode');
+            const isDark = htmlElement.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>
