@@ -905,7 +905,8 @@
 
     <!-- FOOTER -->
     <footer>
-        <p>&copy; 2025 Shronal Duwal. All rights reserved. | Built with HTML, CSS & JavaScript</p>
+        <p>&copy; 2025 Shronal Duwal. All rights reserved. <br> Built with HTML, CSS & JavaScript</p>
+
     </footer>
 
     <script>
@@ -957,6 +958,23 @@
         document.querySelectorAll('.fade-in').forEach(el => {
             observer.observe(el);
         });
+
+        // Visitor Counter using localStorage
+        function updateVisitorCount() {
+            let visitCount = localStorage.getItem('visitCount');
+            
+            if (visitCount === null) {
+                visitCount = 1;
+            } else {
+                visitCount = parseInt(visitCount) + 1;
+            }
+            
+            localStorage.setItem('visitCount', visitCount);
+            document.getElementById('visitorCount').textContent = visitCount;
+        }
+
+        // Initialize visitor counter on page load
+        updateVisitorCount();
     </script>
 </body>
 </html>
