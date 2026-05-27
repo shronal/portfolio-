@@ -1,980 +1,448 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shronal</title>
-    <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
-    <style>
-                * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #dc2626;
-            --primary-dark: #991b1b;
-            --black: #1a1a1a;
-            --white: #ffffff;
-            --gray-light: #f5f5f5;
-            --gray-dark: #333333;
-            --text: #000000;
-            --text-light: #666666;
-            --bg: #ffffff;
-        }
-
-        html.dark-mode {
-            --text: #ffffff;
-            --text-light: #cccccc;
-            --bg: #1a1a1a;
-            --gray-light: #2a2a2a;
-            --gray-dark: #1a1a1a;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--text);
-            background-color: var(--bg);
-            transition: background-color 0.3s ease, color 0.3s ease;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* ===== HEADER & NAV ===== */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 5%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.2);
-        }
-
-        .logo-text {
-            color: var(--white);
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        nav {
-            display: flex;
-            gap: 2.5rem;
-            align-items: center;
-        }
-
-        nav a {
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s ease;
-            position: relative;
-        }
-
-        nav a:hover {
-            opacity: 0.8;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--white);
-            transition: width 0.3s ease;
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        .theme-toggle {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid var(--white);
-            color: var(--white);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
-        }
-
-        /* ===== HERO SECTION ===== */
-        .hero {
-            margin-top: 80px;
-            min-height: calc(100vh - 80px);
-            display: flex;
-            align-items: center;
-            padding: 4rem 5%;
-            background: linear-gradient(135deg, var(--bg) 0%, var(--gray-light) 100%);
-        }
-
-        .hero-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .hero-text h5 {
-            color: var(--primary);
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            letter-spacing: 1px;
-        }
-
-        .hero-text h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            color: var(--text);
-            line-height: 1.2;
-        }
-
-        .hero-text p {
-            font-size: 1.1rem;
-            color: var(--text-light);
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 0.9rem 2rem;
-            font-size: 1rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-
-        .btn.primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
-        }
-
-        .btn.primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(220, 38, 38, 0.4);
-        }
-
-        .btn.secondary {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .btn.secondary:hover {
-            background: var(--primary);
-            color: var(--white);
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .social-links a {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .social-links a:hover {
-            transform: scale(1.15) translateY(-5px);
-            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
-        }
-
-        .hero-image {
-            width: 100%;
-            aspect-ratio: 1;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            color: var(--white);
-            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.2);
-        }
-
-        /* ===== PROJECTS SECTION ===== */
-        .projects {
-            padding: 5rem 5%;
-            background-color: var(--bg);
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            color: var(--text);
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-light);
-            font-size: 1.1rem;
-            margin-bottom: 4rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2.5rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .project-card {
-            background: var(--gray-light);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        html.dark-mode .project-card {
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .project-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.15);
-        }
-
-        .project-header {
-            height: 200px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            font-size: 3rem;
-        }
-
-        .project-content {
-            padding: 1.8rem;
-        }
-
-        .project-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.8rem;
-            color: var(--text);
-        }
-
-        .project-desc {
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .project-tech {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.7rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .tech-tag {
-            background: var(--primary);
-            color: var(--white);
-            padding: 0.4rem 0.9rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .project-link {
-            display: inline-block;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border-bottom: 2px solid transparent;
-        }
-
-        .project-link:hover {
-            border-bottom-color: var(--primary);
-        }
-
-        /* ===== SKILLS SECTION ===== */
-        .skills {
-            padding: 5rem 5%;
-            background: linear-gradient(135deg, var(--gray-light) 0%, var(--bg) 100%);
-        }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            margin-top: 3rem;
-        }
-
-        .skill-box {
-            background: var(--bg);
-            padding: 2rem;
-            border-radius: 15px;
-            border-left: 5px solid var(--primary);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-        }
-
-        html.dark-mode .skill-box {
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .skill-box:hover {
-            transform: translateX(5px);
-            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.1);
-        }
-
-        .skill-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        .skill-list {
-            list-style: none;
-        }
-
-        .skill-list li {
-            padding: 0.5rem 0;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .skill-list li::before {
-            content: '▸';
-            color: var(--primary);
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        /* ===== ABOUT SECTION ===== */
-        .about {
-            padding: 5rem 5%;
-            background-color: var(--bg);
-        }
-
-        .about-content {
-            max-width: 900px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .about-text h3 {
-            font-size: 1.3rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-
-        .about-text p {
-            color: var(--text-light);
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-            font-size: 1.05rem;
-        }
-
-        .about-image {
-            width: 100%;
-            aspect-ratio: 1;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            color: var(--white);
-            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.2);
-        }
-
-        /* ===== CONTACT SECTION ===== */
-        .contact {
-            padding: 5rem 5%;
-            background: linear-gradient(135deg, var(--gray-light) 0%, var(--bg) 100%);
-            text-align: center;
-        }
-
-        .contact h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--text);
-        }
-
-        .contact p {
-            color: var(--text-light);
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .contact-links {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .contact-link {
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .contact-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
-        }
-
-        /* ===== FOOTER ===== */
-        footer {
-            background: var(--black);
-            color: var(--white);
-            text-align: center;
-            padding: 2rem;
-            font-size: 0.9rem;
-        }
-
-        /* ===== ANIMATIONS ===== */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            header {
-                padding: 1rem 5%;
-            }
-
-            nav {
-                gap: 1.5rem;
-            }
-
-            nav a {
-                font-size: 0.9rem;
-            }
-
-            .hero-content {
-                grid-template-columns: 1fr;
-                padding: 2rem 0;
-            }
-
-            .hero-text h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-text p {
-                font-size: 1rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-
-            .skills-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .btn-group {
-                gap: 1rem;
-            }
-
-            .btn {
-                padding: 0.8rem 1.5rem;
-                font-size: 0.95rem;
-            }
-
-            .hero {
-                padding: 2rem 5%;
-            }
-
-            .projects, .skills, .about, .contact {
-                padding: 3rem 5%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            nav {
-                width: 100%;
-                justify-content: space-around;
-            }
-
-            .logo-text {
-                font-size: 1.5rem;
-            }
-
-            nav a {
-                font-size: 0.8rem;
-            }
-
-            .hero-text h1 {
-                font-size: 2rem;
-            }
-
-            .btn-group {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .btn {
-                width: 100%;
-                text-align: center;
-            }
-
-            .social-links {
-                gap: 1rem;
-            }
-
-            .social-links a {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shronal Duwal</title>
+  <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- HEADER -->
-    <header>
-        <div class="logo-text" >Shronal</div>
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#projects">Projects</a>
-            <a href="#skills">Skills</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-            <button class="theme-toggle" id="themeToggle" title="Toggle Light Mode">
-                <i class="fas fa-sun"></i>
-            </button>
-        </nav>
-    </header>
 
-    <!-- HERO SECTION -->
+  <!-- Nav transition overlay -->
+  <div id="page-overlay"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-text">Shronal</div>
+    <nav id="main-nav">
+      <a href="#home">Home</a>
+      <a href="#projects">Projects</a>
+      <a href="#exposure">Exposure</a>
+      <a href="#internship">Internship</a>
+      <a href="#work">Work Exp</a>
+      <a href="#certificates">Certs</a>
+      <a href="#skills">Skills</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme"><i class="fas fa-moon"></i></button>
+    </nav>
+  </header>
+
+  <!-- HERO -->
     <section class="hero" id="home">
-        <div class="hero-content">
-            <div class="hero-text fade-in">
-                <h5>Welcome to my portfolio</h5>
-                <h1>Shronal Duwal</h1>
-                <p>A dedicated computer engineering student with expertise in Frontend Development, UX Design, and Web Development. Skilled in Django, C++, and modern web technologies.</p>
-                <div class="btn-group">
-                    <a href="#contact" class="btn primary">Get In Touch</a>
-                    <a href="#projects" class="btn secondary">View My Work</a>
-                </div>
-                <div class="social-links">
-                    <a href="https://www.facebook.com/shronalduwal" target="_blank" title="Facebook">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/" target="_blank" title="LinkedIn">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="https://www.instagram.com/shronalduwal/" target="_blank" title="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://github.com/shronal" target="_blank" title="GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="hero-image fade-in">
-                <i class="fas fa-user-circle"></i>
-            </div>
+        <div class="hero-ring"></div>
+        <div class="hero-ring"></div>
+        <div class="hero-ring"></div>
+        <div class="hero-ring"></div>
+        <div class="hero-avatar">SD</div>
+        <div class="hero-label">Computer Engineering Student &nbsp;·&nbsp; Nepal</div>
+        <h1>Shronal Duwal</h1>
+        <p class="hero-tagline">Frontend Developer &amp; Full-Stack Enthusiast crafting meaningful digital experiences with Django, C++, and modern web technologies.</p>
+        <div class="hero-divider"></div>
+        <div class="hero-btns">
+            <a href="#contact" class="btn-gold">Get In Touch</a>
+            <a href="#projects" class="btn-outline">View My Work</a>
+        </div>
+        <div class="hero-socials">
+            <a href="https://www.facebook.com/shronalduwal" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://www.instagram.com/shronalduwal/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://github.com/shronal" target="_blank"><i class="fab fa-github"></i></a>
+        </div>
+        <div class="scroll-cue">
+            <div class="scroll-arrow"></div>
+            scroll
         </div>
     </section>
 
-    <!-- PROJECTS SECTION -->
-    <section class="projects" id="projects">
-        <h2 class="section-title">Featured Projects</h2>
-        <p class="section-subtitle">Explore my recent work and projects built with modern technologies</p>
-        
-        <div class="projects-grid">
+  <!-- PROJECTS -->
+  <section class="projects" id="projects">
+    <div class="inner">
+      <p class="section-label">What I've built</p>
+      <h2 class="section-title">Featured Projects</h2>
+      <div class="divider"></div>
+      <p class="section-subtitle">Recent work built with modern technologies and a focus on clean, functional design</p>
+      <div class="projects-grid">
+        <div class="project-card reveal"><div class="project-header"><i class="fa-solid fa-user"></i></div><div class="project-content"><h3 class="project-title">The Portfolio Website</h3><p class="project-desc">A responsive portfolio website showcasing my projects and skills in web development.</p><div class="project-tech"><span class="tech-tag">JavaScript</span><span class="tech-tag">HTML/CSS</span></div><a href="https://github.com/shronal/protfolio/" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal"><div class="project-header"><i class="fas fa-code"></i></div><div class="project-content"><h3 class="project-title">The Retrieval Hub</h3><p class="project-desc">A comprehensive lost and found web application allowing users to post, search, and claim lost or found items.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">HTML/CSS</span></div><a href="https://github.com/shronal/retrieval_hub/" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal"><div class="project-header"><i class="fas fa-building"></i></div><div class="project-content"><h3 class="project-title">Hotel Vehicle Reservation</h3><p class="project-desc">A C++ graphics-based reservation system for managing vehicle bookings in hotels with interactive GUI.</p><div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics.h</span><span class="tech-tag">DSA</span></div><a href="https://github.com/shronal/reservationsystem/" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal"><div class="project-header"><i class="fas fa-tree"></i></div><div class="project-content"><h3 class="project-title">Tree Traversal Visualizer</h3><p class="project-desc">An interactive DSA visualizer demonstrating binary tree traversals with graphics.h.</p><div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics</span><span class="tech-tag">DSA</span></div><a href="https://github.com/shronal/tree_traversal" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal"><div class="project-header"><i class="fas fa-book"></i></div><div class="project-content"><h3 class="project-title">Book Exchange Platform</h3><p class="project-desc">A Django-based platform for students to donate, borrow, and exchange books within the community.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">SQLite</span><span class="tech-tag">Bootstrap</span></div><a href="https://github.com/shronal/book_exchange" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal"><div class="project-header"><i class="fas fa-calendar"></i></div><div class="project-content"><h3 class="project-title">KhEC Event Flow</h3><p class="project-desc">A comprehensive event management system for college-level events with admin, organizer, and user roles.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">Bootstrap</span></div><a href="https://github.com/shronal/khec_ems" target="_blank" class="project-link">View Code →</a></div></div>
+      </div>
+    </div>
+  </section>
 
-            <!-- Project 1 -->
-            <div class="project-card fade-in">
-                <div class="project-header">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="project-content">
-                    <h3 class="project-title">The Protfolio Website</h3>
-                    <p class="project-desc">A responsive portfolio website showcasing my projects and skills in web development.</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">JavaScript</span>
-                        <span class="tech-tag">HTML/CSS</span>
-                    </div>
-                    <a href="https://github.com/shronal/protfolio/" target="_blank" class="project-link">View Code →</a>
-                </div>
-            </div>
-
-
-            <!-- Project 2 -->
-            <div class="project-card fade-in">
-                <div class="project-header">
-                    <i class="fas fa-code"></i>
-                </div>
-                <div class="project-content">
-                    <h3 class="project-title">The Retrieval Hub</h3>
-                    <p class="project-desc">A comprehensive lost and found web application allowing users to post, search, and claim lost or found items.</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Django</span>
-                        <span class="tech-tag">PostgreSQL</span>
-                        <span class="tech-tag">HTML/CSS</span>
-                    </div>
-                    <a href="https://github.com/shronal/retrieval_hub/" target="_blank" class="project-link">View Code →</a>
-                </div>
-            </div>
-
-            <!-- Project 3 -->
-            <div class="project-card fade-in">
-                <div class="project-header">
-                    <i class="fas fa-building"></i>
-                </div>
-                <div class="project-content">
-                    <h3 class="project-title">Hotel Guest Vehicle Reservation</h3>
-                    <p class="project-desc">A C++ graphics-based reservation system for managing vehicle bookings in hotels with interactive GUI.</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">C++</span>
-                        <span class="tech-tag">Graphics.h</span>
-                        <span class="tech-tag">DSA</span>
-                    </div>
-                    <a href="https://github.com/shronal/reservationsystem/" target="_blank" class="project-link">View Code →</a>
-                </div>
-            </div>
-
-            <!-- Project 4 -->
-            <div class="project-card fade-in">
-                <div class="project-header">
-                    <i class="fas fa-tree"></i>
-                </div>
-                <div class="project-content">
-                    <h3 class="project-title">Tree Traversal Visualizer</h3>
-                    <p class="project-desc">An interactive DSA visualizer demonstrating binary tree traversals (In-order, Pre-order, Post-order) with graphics.h</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">C++</span>
-                        <span class="tech-tag">Graphics</span>
-                        <span class="tech-tag">DSA</span>
-                    </div>
-                    <a href="https://github.com/shronal/tree_traversal" target="_blank" class="project-link">View Code →</a>
-                </div>
-            </div>
-
-            <!-- Project 5 -->
-            <div class="project-card fade-in">
-                <div class="project-header">
-                    <i class="fas fa-book"></i>
-                </div>
-                <div class="project-content">
-                    <h3 class="project-title">Book Exchange Platform</h3>
-                    <p class="project-desc">A Django-based platform for students to donate, borrow, and exchange books within the community.</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Django</span>
-                        <span class="tech-tag">SQLite</span>
-                        <span class="tech-tag">Bootstrap</span>
-                    </div>
-                    <a href="https://github.com/shronal/book_exchange" target="_blank" class="project-link">View Code →</a>
-                </div>
-            </div>
-
-            <!-- Project 6 -->
-            <div class="project-card fade-in">
-                <div class="project-header">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="project-content">
-                    <h3 class="project-title">KhEC Event Flow</h3>
-                    <p class="project-desc">A comprehensive event management system for college-level events with admin, organizer, and user roles.</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Django</span>
-                        <span class="tech-tag">PostgreSQL</span>
-                        <span class="tech-tag">Bootstrap</span>
-                    </div>
-                    <a href="https://github.com/shronal/khec_ems" target="_blank" class="project-link">View Code →</a>
-                </div>
-            </div>
-
+  <!-- EXPOSURE -->
+  <section class="exposure" id="exposure">
+    <div class="inner">
+      <p class="section-label">Events &amp; Conferences</p>
+      <h2 class="section-title">Exposure</h2>
+      <div class="divider"></div>
+      <div class="projects-grid" style="max-width:640px;margin:0 auto;">
+        <div class="project-card reveal">
+          <div class="project-header"><i class="fas fa-microphone"></i></div>
+          <div class="project-content">
+            <h3 class="project-title">Khwopa CEEL 2026</h3>
+            <p class="project-desc">Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering — engaging with cutting-edge research and networking with engineers from across Nepal.</p>
+            <div class="project-tech"><span class="tech-tag">Networking</span><span class="tech-tag">Research</span><span class="tech-tag">Engineering</span></div>
+            <a href="https://ceel.khwopaconference.com/" target="_blank" class="project-link">Conference Site →</a>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- EXPOSURE -->
-    <section class="about" id="about">
-        <h2 class="section-title">Exposure</h2>
-        <div class="project-card fade-in">
-                <div class="project-header">
-                    <i class="fas fa-microphone"></i>
-                </div>
-                <div class="project-content">
-                    <h3 class="project-title">Khwopa CEEL 2026</h3>
-                    <p class="project-desc">Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering.</p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Networking</span>
-                        <span class="tech-tag">Research</span>
-                        <span class="tech-tag">Engineering</span>
-                    </div>
-                    <a href="https://ceel.khwopaconference.com/" target="_blank" class="project-link">Conference Site →</a>
-                </div>
-            </div>
-    </section>
+  <!-- INTERNSHIP JOURNEY -->
+  <section class="internship" id="internship">
+    <div class="inner">
+      <p class="section-label">Internship Journey</p>
+      <h2 class="section-title">Professional Training</h2>
+      <div class="divider"></div>
+      <p class="section-subtitle">Real-world experiences that shaped my technical and professional growth</p>
 
-    <!-- SKILLS SECTION -->
-    <section class="skills" id="skills">
-        <h2 class="section-title">Skills & Expertise</h2>
-        <p class="section-subtitle">Technologies and tools I work with</p>
-        
-        <div class="skills-grid">
-            <div class="skill-box fade-in">
-                <h3 class="skill-title">Frontend Development</h3>
-                <ul class="skill-list">
-                    <li>HTML5 & CSS3</li>
-                    <li>JavaScript</li>
-                    <li>Responsive Design</li>
-                    <li>Bootstrap</li>
-                    <li>UI/UX Design</li>
-                </ul>
-            </div>
+      <div class="timeline">
 
-            <div class="skill-box fade-in">
-                <h3 class="skill-title">Backend Development</h3>
-                <ul class="skill-list">
-                    <li>Django Framework</li>
-                    <li>Python Programming</li>
-                    <li>PostgreSQL</li>
-                    <li>SQLite</li>
-                    <li>RESTful APIs</li>
-                </ul>
+        <!-- Global Nobel Internship -->
+        <div class="timeline-item">
+          <div class="timeline-dot-wrap"><div class="t-dot"></div></div>
+          <div class="timeline-body">
+            <div class="badge-intl"><i class="fas fa-globe"></i> International Internship</div>
+            <p class="tl-date">90 Hours Completed</p>
+            <p class="tl-org">Nobel Fundamentals Program &nbsp;·&nbsp; Global Nobel Internship</p>
+            <h3 class="tl-title">Leadership &amp; Technical Skills Intern</h3>
+            <p class="tl-desc">
+              Successfully completed the <strong>90-hour Nobel Fundamentals Internship Program</strong>, an international learner-to-leader initiative focused on developing both technical and professional leadership skills through collaborative learning and peer engagement.
+            </p>
+            <p class="tl-desc">
+              Participated in interdisciplinary training sessions covering <strong>Introduction to Web Design</strong>, <strong>Pitch &amp; Presentation</strong>, <strong>Internet Troubleshooting &amp; Communication</strong>, and <strong>Leadership Development</strong>. Strengthened practical communication, teamwork, and problem-solving abilities while assisting fellow learners in mastering core concepts.
+            </p>
+            <p class="tl-desc">
+              The program emphasized leadership through mentorship, active participation, and real-world collaboration, helping build confidence in public speaking, technical understanding, and professional growth within an international learning environment.
+            </p>
+            <div class="timeline-tags">
+              <span class="timeline-tag">Leadership</span>
+              <span class="timeline-tag">Web Design</span>
+              <span class="timeline-tag">Communication</span>
+              <span class="timeline-tag">Presentation Skills</span>
+              <span class="timeline-tag">Technical Training</span>
+              <span class="timeline-tag">International Program</span>
             </div>
-
-            <div class="skill-box fade-in">
-                <h3 class="skill-title">Programming Languages</h3>
-                <ul class="skill-list">
-                    <li>C++</li>
-                    <li>Python</li>
-                    <li>JavaScript</li>
-                    <li>Data Structures</li>
-                    <li>Algorithms</li>
-                </ul>
-            </div>
-
-            <div class="skill-box fade-in">
-                <h3 class="skill-title">Tools & Technologies</h3>
-                <ul class="skill-list">
-                    <li>Git & GitHub</li>
-                    <li>Visual Studio Code</li>
-                    <li>Dev C++</li>
-                    <li>Graphics.h</li>
-                    <li>Command Line</li>
-                </ul>
-            </div>
+          </div>
         </div>
-    </section>
 
-    <!-- ABOUT SECTION -->
-    <section class="about" id="about">
-        <h2 class="section-title">About Me</h2>
-        <div class="about-content">
-            <div class="about-text fade-in">
-                <h3>Who Am I?</h3>
-                <p>I'm a passionate computer engineering student from Nepal, currently pursuing my Bachelor's degree at Khwopa Engineering College. I have a strong interest in web development, UI/UX design, and software engineering.</p>
-                
-                <h3 style="margin-top: 2rem;">My Journey</h3>
-                <p>Over the past few years, I've worked on various projects ranging from C++ desktop applications to full-stack Django web applications. I believe in continuous learning and staying updated with the latest technologies in the field.</p>
-                
-                <h3 style="margin-top: 2rem;">What Drives Me</h3>
-                <p>I'm driven by the passion to create meaningful digital solutions that solve real-world problems. I enjoy collaborating with others and contributing to open-source projects that benefit the community.</p>
-            </div>
-            <div class="about-image fade-in">
-                <i class="fas fa-laptop-code"></i>
-            </div>
+        <!-- Placeholder internship -->
+        <div class="timeline-item">
+          <div class="timeline-dot-wrap"><div class="t-dot"></div></div>
+          <div class="timeline-body">
+            <p class="tl-date">10th May 2026</p>
+            <p class="tl-org">Oasis Byte</p>
+            <h3 class="tl-title">Web Development Intern</h3>
+            <p class="tl-desc">Running</p>
+            <div class="timeline-tags"><span class="timeline-tag">Skill</span><span class="timeline-tag">Technology</span></div>
+          </div>
         </div>
-    </section>
 
-    <!-- CONTACT SECTION -->
-    <section class="contact" id="contact">
-        <h2>Let's Work Together</h2>
-        <p>I'm always interested in hearing about new projects and opportunities. Feel free to reach out!</p>
-        
-        <div class="contact-links">
-            <a href="https://wa.me/9779861287028?text=Hi Shronal, I would like to connect with you!" target="_blank" class="contact-link">
-                <i class="fab fa-whatsapp"></i>
-                WhatsApp
-            </a>
-            <a href="mailto:shronalduwal999@gmail.com" class="contact-link">
-                <i class="fas fa-envelope"></i>
-                Email
-            </a>
-            <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/" target="_blank" class="contact-link">
-                <i class="fab fa-linkedin"></i>
-                LinkedIn
-            </a>
-            <a href="https://github.com/shronal" target="_blank" class="contact-link">
-                <i class="fab fa-github"></i>
-                GitHub
-            </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK EXPERIENCE -->
+  <section class="work-exp" id="work">
+    <p class="section-label" style="text-align:center;">Work Experience</p>
+    <h2 class="section-title" style="text-align:center;color:#fff;margin-bottom:0.6rem;">Government &amp; Professional Work</h2>
+    <div class="divider" style="margin:0.9rem auto 2.8rem;"></div>
+
+    <div class="work-cards">
+      <div class="work-card reveal">
+        <div class="work-card-top">
+          <div class="work-icon"><i class="fas fa-landmark"></i></div>
+          <div class="work-info">
+            <h3>Census Enumerator</h3>
+            <p class="work-org">Central Bureau of Statistics · Government of Nepal</p>
+          </div>
         </div>
-    </section>
+        <p class="work-desc">
+          Appointed by the Government of Nepal to participate in the <strong style="color:rgba(255,239,179,0.75);">National Economic Census 2026</strong> — a landmark nationwide effort documenting Nepal's economic structure, workforce distribution, and business landscape. The role demanded accuracy, field discipline, and civic responsibility across more than two months of active enumeration work.
+        </p>
+        <div class="work-meta">
+          <div class="work-meta-item">
+            <i class="fas fa-calendar-alt"></i>
+            <div><div class="work-meta-label">Start</div><div class="work-meta-val">15 April 2026</div></div>
+          </div>
+          <div class="work-meta-item">
+            <i class="fas fa-calendar-check"></i>
+            <div><div class="work-meta-label">End</div><div class="work-meta-val">21 June 2026</div></div>
+          </div>
+          <div class="work-meta-item">
+            <i class="fas fa-clock"></i>
+            <div><div class="work-meta-label">Duration</div><div class="work-meta-val">~2 months 7 days</div></div>
+          </div>
+          <div class="work-meta-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div><div class="work-meta-label">Location</div><div class="work-meta-val">Nepal</div></div>
+          </div>
+        </div>
+        <div class="status-badge"><div class="status-dot"></div>Service Completed</div>
+      </div>
+    </div>
+  </section>
 
-    <!-- FOOTER -->
-    <footer>
-        <p>&copy; 2025 Shronal Duwal. All rights reserved. <br> Built with HTML, CSS & JavaScript</p>
+  <!-- CERTIFICATES -->
+  <section class="certificates" id="certificates">
+    <div class="inner">
+      <p class="section-label">Credentials</p>
+      <h2 class="section-title">Certificates &amp; Achievements</h2>
+      <div class="divider"></div>
+      <p class="section-subtitle">Click any certificate to view details</p>
 
-    </footer>
+      <div class="cert-grid">
 
-    <script>
-        // Dark mode toggle functionality
-        const themeToggle = document.getElementById('themeToggle');
-        const htmlElement = document.documentElement;
+        <div class="cert-card reveal" onclick="openCert('Government Service','National Economic Census 2026 — Enumerator Certificate','Central Bureau of Statistics, Government of Nepal','April – June 2026','fas fa-landmark','Official government appointment as a census enumerator for the National Economic Census 2026.')">
+          <div class="cert-img-wrap">
+            <div class="cert-blueprint">
+              <div class="cert-bp-icon"><i class="fas fa-landmark"></i></div>
+              <div class="cert-bp-ribbon">Certificate of Service</div>
+              <div class="cert-bp-lines"><div class="cert-bp-line"></div><div class="cert-bp-line"></div></div>
+            </div>
+            <div class="cert-view-hint"><i class="fas fa-eye"></i> View Details</div>
+          </div>
+          <div class="cert-body">
+            <p class="cert-type">Government Service</p>
+            <p class="cert-title">National Economic Census 2026 — Enumerator Certificate</p>
+            <p class="cert-issuer">Central Bureau of Statistics, Gov. of Nepal</p>
+            <p class="cert-date"><i class="fas fa-calendar-alt"></i> April – June 2026</p>
+          </div>
+        </div>
 
-        // Check for saved theme preference or default to light mode
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        if (savedTheme === 'dark') {
-            htmlElement.classList.add('dark-mode');
-            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        <div class="cert-card reveal" onclick="openCert('International Internship','Nobel Fundamentals Program — Completion Certificate','Global Nobel Internship','2025 / 2026','fas fa-globe','Successfully completed 90 hours of the Nobel Fundamentals Internship Program covering web design, leadership, and communication.')">
+          <div class="cert-img-wrap">
+            <div class="cert-blueprint">
+              <div class="cert-bp-icon"><i class="fas fa-globe"></i></div>
+              <div class="cert-bp-ribbon">Certificate of Completion</div>
+              <div class="cert-bp-lines"><div class="cert-bp-line"></div><div class="cert-bp-line"></div></div>
+            </div>
+            <div class="cert-view-hint"><i class="fas fa-eye"></i> View Details</div>
+          </div>
+          <div class="cert-body">
+            <p class="cert-type">International Internship</p>
+            <p class="cert-title">Nobel Fundamentals Program — 90-Hour Completion</p>
+            <p class="cert-issuer">Global Nobel Internship</p>
+            <p class="cert-date"><i class="fas fa-calendar-alt"></i> 90 Hours</p>
+          </div>
+        </div>
+
+        <div class="cert-card reveal" onclick="openCert('Conference','Khwopa CEEL 2026 — Participation Certificate','Khwopa Engineering College','2026','fas fa-microphone','Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering.')">
+          <div class="cert-img-wrap">
+            <div class="cert-blueprint">
+              <div class="cert-bp-icon"><i class="fas fa-microphone"></i></div>
+              <div class="cert-bp-ribbon">Certificate of Participation</div>
+              <div class="cert-bp-lines"><div class="cert-bp-line"></div><div class="cert-bp-line"></div></div>
+            </div>
+            <div class="cert-view-hint"><i class="fas fa-eye"></i> View Details</div>
+          </div>
+          <div class="cert-body">
+            <p class="cert-type">Conference</p>
+            <p class="cert-title">Khwopa CEEL 2026 — Participation Certificate</p>
+            <p class="cert-issuer">Khwopa Engineering College</p>
+            <p class="cert-date"><i class="fas fa-calendar-alt"></i> 2026</p>
+          </div>
+        </div>
+
+        <!-- <div class="cert-card reveal" onclick="openCert('Internship','Add Your Internship Certificate Here','Organisation Name','Month Year','fas fa-briefcase','Replace this with your actual internship certificate details.')">
+          <div class="cert-img-wrap">
+            <div class="cert-blueprint">
+              <div class="cert-bp-icon"><i class="fas fa-briefcase"></i></div>
+              <div class="cert-bp-ribbon">Certificate of Internship</div>
+              <div class="cert-bp-lines"><div class="cert-bp-line"></div><div class="cert-bp-line"></div></div>
+            </div>
+            <div class="cert-view-hint"><i class="fas fa-eye"></i> View Details</div>
+          </div>
+          <div class="cert-body">
+            <p class="cert-type">Internship</p>
+            <p class="cert-title">Add Your Internship Certificate Here</p>
+            <p class="cert-issuer">Organisation Name</p>
+            <p class="cert-date"><i class="fas fa-calendar-alt"></i> Month Year</p>
+          </div>
+        </div>
+
+        <div class="cert-card reveal" onclick="openCert('Workshop','Add Your Workshop Certificate Here','Issuing Organisation','Month Year','fas fa-chalkboard-teacher','Replace this with your workshop certificate details.')">
+          <div class="cert-img-wrap">
+            <div class="cert-blueprint">
+              <div class="cert-bp-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+              <div class="cert-bp-ribbon">Certificate of Attendance</div>
+              <div class="cert-bp-lines"><div class="cert-bp-line"></div><div class="cert-bp-line"></div></div>
+            </div>
+            <div class="cert-view-hint"><i class="fas fa-eye"></i> View Details</div>
+          </div>
+          <div class="cert-body">
+            <p class="cert-type">Workshop</p>
+            <p class="cert-title">Add Your Workshop Certificate Here</p>
+            <p class="cert-issuer">Issuing Organisation</p>
+            <p class="cert-date"><i class="fas fa-calendar-alt"></i> Month Year</p>
+          </div>
+        </div> -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATE MODAL -->
+  <div class="cert-modal" id="certModal">
+    <div class="cert-modal-backdrop" onclick="closeCert()"></div>
+    <div class="cert-modal-box">
+      <button class="cert-modal-close" onclick="closeCert()"><i class="fas fa-times"></i></button>
+      <div class="cert-modal-icon"><i id="modal-icon" class="fas fa-landmark"></i></div>
+      <p class="cert-modal-type" id="modal-type"></p>
+      <h2 class="cert-modal-title" id="modal-title"></h2>
+      <p class="cert-modal-issuer" id="modal-issuer"></p>
+      <div class="cert-modal-meta">
+        <div class="cert-modal-row"><i class="fas fa-calendar-alt"></i><span id="modal-date"></span></div>
+        <div class="cert-modal-row"><i class="fas fa-info-circle"></i><span id="modal-desc"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <section class="skills" id="skills">
+    <div class="inner">
+      <p class="section-label">Expertise</p>
+      <h2 class="section-title">Skills &amp; Technologies</h2>
+      <div class="divider"></div>
+      <div class="skills-grid">
+        <div class="skill-box reveal"><h3 class="skill-title">Frontend Development</h3><ul class="skill-list"><li>HTML5 &amp; CSS3</li><li>JavaScript</li><li>Responsive Design</li><li>Bootstrap</li><li>UI/UX Design</li></ul></div>
+        <div class="skill-box reveal"><h3 class="skill-title">Backend Development</h3><ul class="skill-list"><li>Django Framework</li><li>Python Programming</li><li>PostgreSQL</li><li>SQLite</li><li>RESTful APIs</li></ul></div>
+        <div class="skill-box reveal"><h3 class="skill-title">Programming Languages</h3><ul class="skill-list"><li>C++</li><li>Python</li><li>JavaScript</li><li>Data Structures</li><li>Algorithms</li></ul></div>
+        <div class="skill-box reveal"><h3 class="skill-title">Tools &amp; Tech</h3><ul class="skill-list"><li>Git &amp; GitHub</li><li>Visual Studio Code</li><li>Dev C++</li><li>Graphics.h</li><li>Command Line</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="inner">
+      <p class="section-label">The person behind the code</p>
+      <h2 class="section-title">About Me</h2>
+      <div class="divider"></div>
+      <div class="about-content">
+        <div class="about-text reveal">
+          <h3>Who Am I?</h3>
+          <p>I'm a passionate computer engineering student from Nepal, currently pursuing my Bachelor's degree at Khwopa Engineering College — with a strong interest in web development, UI/UX design, and software engineering.</p>
+          <h3>My Journey</h3>
+          <p>I've worked on projects from C++ desktop apps to full-stack Django systems, completed an international 90-hour leadership internship, and served as a government enumerator for Nepal's National Economic Census 2026.</p>
+          <h3>What Drives Me</h3>
+          <p>I'm driven by the passion to create meaningful digital solutions. I enjoy collaborating, contributing to open source, and continuously pushing my own limits — one project at a time.</p>
+        </div>
+        <div class="about-image reveal"><i class="fas fa-laptop-code"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <h2>Let's Work Together</h2>
+    <p>I'm always open to new projects, opportunities, and collaborations. Feel free to reach out!</p>
+    <div class="contact-links">
+      <a href="https://wa.me/9779861287028?text=Hi Shronal, I would like to connect with you!" target="_blank" class="contact-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="mailto:shronalduwal999@gmail.com" class="contact-link"><i class="fas fa-envelope"></i> Email</a>
+      <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/" target="_blank" class="contact-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
+      <a href="https://github.com/shronal" target="_blank" class="contact-link"><i class="fab fa-github"></i> GitHub</a>
+    </div>
+  </section>
+
+  <footer><p>&copy; 2026 Shronal Duwal &middot; All rights reserved &middot; Built with HTML, CSS &amp; JavaScript</p></footer>
+
+  <script>
+    // ── THEME TOGGLE
+    const toggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'dark') {
+      html.classList.add('dark-mode');
+      toggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark-mode');
+      const dark = html.classList.contains('dark-mode');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+      toggle.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
+
+    // ── SMOOTH SCROLL with flash transition
+    const overlay = document.getElementById('page-overlay');
+    function smoothScrollTo(target) {
+      overlay.classList.add('flash');
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => overlay.classList.remove('flash'), 300);
+      }, 150);
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const id = a.getAttribute('href');
+        if (id === '#') return;
+        const target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        smoothScrollTo(target);
+      });
+    });
+
+    // ── ACTIVE NAV highlight on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          const link = document.querySelector(`nav a[href="#${e.target.id}"]`);
+          if (link) link.classList.add('active');
         }
+      });
+    }, { threshold: 0.35 });
+    sections.forEach(s => sectionObserver.observe(s));
 
-        // Toggle theme on button click
-        themeToggle.addEventListener('click', function() {
-            htmlElement.classList.toggle('dark-mode');
-            const isDark = htmlElement.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-        });
-
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        // Fade in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Visitor Counter using localStorage
-        function updateVisitorCount() {
-            let visitCount = localStorage.getItem('visitCount');
-            
-            if (visitCount === null) {
-                visitCount = 1;
-            } else {
-                visitCount = parseInt(visitCount) + 1;
-            }
-            
-            localStorage.setItem('visitCount', visitCount);
-            document.getElementById('visitorCount').textContent = visitCount;
+    // ── SCROLL REVEAL
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revealObs.unobserve(e.target);
         }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-        // Initialize visitor counter on page load
-        updateVisitorCount();
-    </script>
+    // ── TIMELINE REVEAL
+    const tlObs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 120);
+          tlObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.timeline-item').forEach(el => tlObs.observe(el));
+
+    // ── CERT MODAL
+    function openCert(type, title, issuer, date, iconClass, desc) {
+      document.getElementById('modal-icon').className = iconClass;
+      document.getElementById('modal-type').textContent = type;
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-issuer').textContent = issuer;
+      document.getElementById('modal-date').textContent = date;
+      document.getElementById('modal-desc').textContent = desc;
+      document.getElementById('certModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeCert() {
+      document.getElementById('certModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCert(); });
+  </script>
 </body>
 </html>
