@@ -100,6 +100,71 @@
       .cert-modal-img-wrap { width: calc(100% + 3.2rem); margin: -1.6rem -1.6rem 1.4rem; max-height: 240px; }
       .cert-modal-img { max-height: 240px; }
     }
+
+    /* ── PROJECT MEDIA (video/gallery) — reuses cert-modal-img-wrap look ── */
+    .proj-modal-box { max-width: 620px; }
+
+    .project-header { position: relative; cursor: pointer; }
+    .proj-view-hint {
+      position: absolute; inset: 0;
+      background: rgba(1,62,55,0.82);
+      display: flex; align-items: center; justify-content: center;
+      color: #ffefb3; font-size: 0.82rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      opacity: 0; transition: opacity 0.28s;
+      gap: 0.5rem;
+    }
+    .project-card:hover .proj-view-hint { opacity: 1; }
+
+    #proj-media-wrap #proj-video {
+      width: 100%;
+      max-height: 340px;
+      display: none;
+      background: #000;
+    }
+    #proj-media-wrap #proj-image { cursor: zoom-in; }
+
+    .proj-gallery-controls {
+      position: absolute;
+      inset: 0;
+      display: none;
+      pointer-events: none;
+    }
+    .proj-gallery-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: rgba(1,15,13,0.55);
+      border: 1.5px solid rgba(255,239,179,0.35);
+      color: #ffefb3;
+      font-size: 0.95rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      pointer-events: all;
+      transition: background 0.2s ease;
+    }
+    .proj-gallery-btn:hover { background: rgba(1,62,55,0.85); }
+    .proj-gallery-btn.prev { left: 14px; }
+    .proj-gallery-btn.next { right: 14px; }
+    .proj-gallery-counter {
+      position: absolute;
+      bottom: 12px; right: 16px;
+      background: rgba(1,15,13,0.6);
+      border: 1px solid rgba(255,239,179,0.25);
+      color: #ffefb3;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      #proj-media-wrap #proj-video { max-height: 240px; }
+    }
   </style>
 </head>
 <body>
@@ -160,11 +225,11 @@
       <p class="section-subtitle">Recent work built with modern technologies and a focus on clean, functional design</p>
       <div class="projects-grid">
         <div class="project-card reveal"><div class="project-header"><i class="fa-solid fa-user"></i></div><div class="project-content"><h3 class="project-title">The Portfolio Website</h3><p class="project-desc">A responsive portfolio website showcasing my projects and skills in web development.</p><div class="project-tech"><span class="tech-tag">JavaScript</span><span class="tech-tag">HTML/CSS</span></div><a href="https://github.com/shronal/protfolio/" target="_blank" class="project-link">View Code →</a></div></div>
-        <div class="project-card reveal"><div class="project-header"><i class="fas fa-code"></i></div><div class="project-content"><h3 class="project-title">The Retrieval Hub</h3><p class="project-desc">A comprehensive lost and found web application allowing users to post, search, and claim lost or found items.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">HTML/CSS</span></div><a href="https://github.com/shronal/retrieval_hub/" target="_blank" class="project-link">View Code →</a></div></div>
-        <div class="project-card reveal"><div class="project-header"><i class="fas fa-building"></i></div><div class="project-content"><h3 class="project-title">Hotel Vehicle Reservation</h3><p class="project-desc">A C++ graphics-based reservation system for managing vehicle bookings in hotels with interactive GUI.</p><div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics.h</span><span class="tech-tag">DSA</span></div><a href="https://github.com/shronal/reservationsystem/" target="_blank" class="project-link">View Code →</a></div></div>
-        <div class="project-card reveal"><div class="project-header"><i class="fas fa-tree"></i></div><div class="project-content"><h3 class="project-title">Tree Traversal Visualizer</h3><p class="project-desc">An interactive DSA visualizer demonstrating binary tree traversals with graphics.h.</p><div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics</span><span class="tech-tag">DSA</span></div><a href="https://github.com/shronal/tree_traversal" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal"><div class="project-header" onclick="openProject('video','The Retrieval Hub','A comprehensive lost and found web application allowing users to post, search, and claim lost or found items.',['Django','PostgreSQL','HTML/CSS'],'https://github.com/shronal/retrieval_hub/','videos/laf.mp4')"><i class="fas fa-code"></i><div class="proj-view-hint"><i class="fas fa-play"></i> Watch Demo</div></div><div class="project-content"><h3 class="project-title">The Retrieval Hub</h3><p class="project-desc">A comprehensive lost and found web application allowing users to post, search, and claim lost or found items.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">HTML/CSS</span></div><a href="https://github.com/shronal/retrieval_hub/" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal"><div class="project-header" onclick="openProject('gallery','Hotel Vehicle Reservation','A C++ graphics-based reservation system for managing vehicle bookings in hotels with interactive GUI.',['C++','Graphics.h','DSA'],'https://github.com/shronal/reservationsystem/',['images/c++/a (1).jpg','images/c++/a (2).jpg','images/c++/a (3).jpg','images/c++/a (4).jpg','images/c++/a (5).jpg','images/c++/a (6).jpg','images/c++/a (7).jpg','images/c++/a (8).jpg','images/c++/a (9).jpg','images/c++/a (10).jpg','images/c++/a (11).jpg','images/c++/a (12).jpg','images/c++/a (13).jpg','images/c++/a (14).jpg','images/c++/a (15).jpg','images/c++/a (16).jpg','images/c++/a (17).jpg','images/c++/a (18).jpg','images/c++/a (19).jpg','images/c++/a (20).jpg','images/c++/a (21).jpg','images/c++/a (22).jpg','images/c++/a (23).jpg','images/c++/a (24).jpg','images/c++/a (25).jpg','images/c++/a (26).jpg','images/c++/a (27).jpg','images/c++/a (28).jpg','images/c++/a (29).jpg','images/c++/a (30).jpg','images/c++/a (31).jpg','images/c++/a (32).jpg','images/c++/a (33).jpg','images/c++/a (34).jpg','images/c++/a (35).jpg','images/c++/a (36).jpg','images/c++/a (37).jpg','images/c++/a (38).jpg'])"><i class="fas fa-building"></i><div class="proj-view-hint"><i class="fas fa-images"></i> View Gallery</div></div><div class="project-content"><h3 class="project-title">Hotel Vehicle Reservation</h3><p class="project-desc">A C++ graphics-based reservation system for managing vehicle bookings in hotels with interactive GUI.</p><div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics.h</span><span class="tech-tag">DSA</span></div><a href="https://github.com/shronal/reservationsystem/" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal"><div class="project-header" onclick="openProject('video','Tree Traversal Visualizer','An interactive DSA visualizer demonstrating binary tree traversals with graphics.h.',['C++','Graphics','DSA'],'https://github.com/shronal/tree_traversal','videos/tree.mp4')"><i class="fas fa-tree"></i><div class="proj-view-hint"><i class="fas fa-play"></i> Watch Demo</div></div><div class="project-content"><h3 class="project-title">Tree Traversal Visualizer</h3><p class="project-desc">An interactive DSA visualizer demonstrating binary tree traversals with graphics.h.</p><div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics</span><span class="tech-tag">DSA</span></div><a href="https://github.com/shronal/tree_traversal" target="_blank" class="project-link">View Code →</a></div></div>
         <!-- <div class="project-card reveal"><div class="project-header"><i class="fas fa-book"></i></div><div class="project-content"><h3 class="project-title">Book Exchange Platform</h3><p class="project-desc">A Django-based platform for students to donate, borrow, and exchange books within the community.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">SQLite</span><span class="tech-tag">Bootstrap</span></div><a href="https://github.com/shronal/book_exchange" target="_blank" class="project-link">View Code →</a></div></div> -->
-        <div class="project-card reveal"><div class="project-header"><i class="fas fa-calendar"></i></div><div class="project-content"><h3 class="project-title">KhEC Event Flow</h3><p class="project-desc">A comprehensive event management system for college-level events with admin, organizer, and user roles.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">Bootstrap</span></div><a href="https://github.com/shronal/khec_ems" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal"><div class="project-header" onclick="openProject('gallery','KhEC Event Flow','A comprehensive event management system for college-level events with admin, organizer, and user roles.',['Django','PostgreSQL','Bootstrap'],'https://github.com/shronal/khec_ems',['images/khec-event/a (1).jpg','images/khec-event/a (2).jpg','images/khec-event/a (3).jpg','images/khec-event/a (4).jpg','images/khec-event/a (5).jpg','images/khec-event/a (6).jpg','images/khec-event/a (7).jpg','images/khec-event/a (8).jpg','images/khec-event/a (9).jpg','images/khec-event/a (10).jpg'])"><i class="fas fa-calendar"></i><div class="proj-view-hint"><i class="fas fa-images"></i> View Gallery</div></div><div class="project-content"><h3 class="project-title">KhEC Event Flow</h3><p class="project-desc">A comprehensive event management system for college-level events with admin, organizer, and user roles.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">Bootstrap</span></div><a href="https://github.com/shronal/khec_ems" target="_blank" class="project-link">View Code →</a></div></div>
         <div class="project-card reveal"><div class="project-header"><i class="fas fa-landmark"></i></div><div class="project-content"><h3 class="project-title">GovSewa</h3><p class="project-desc">An AI-powered government service guidance platform helping citizens access information, procedures, and public services efficiently.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">AI/ML</span><span class="tech-tag">PostgreSQL</span></div><a href="" target="_blank" class="project-link">Building →</a></div></div>
       </div>
     </div>
@@ -329,7 +394,7 @@
           </div>
         </div>
 
-        <div class="cert-card reveal" onclick="openCert('Conference','Khwopa CEEL 2026 — Participation Certificate','Khwopa Engineering College','2026','fas fa-microphone','Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering.','Images/Certificates/khec-ceel.jpeg')">
+        <div class="cert-card reveal" onclick="openCert('Conference','Khwopa CEEL 2026 — Participation Certificate','Khwopa Engineering College','2026','fas fa-microphone','Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering.','Images/Certificates/khec-ceel.jpg')">
           <div class="cert-img-wrap">
             <div class="cert-blueprint">
               <div class="cert-bp-icon"><i class="fas fa-microphone"></i></div>
@@ -401,6 +466,27 @@
         <div class="cert-modal-row"><i class="fas fa-calendar-alt"></i><span id="modal-date"></span></div>
         <div class="cert-modal-row"><i class="fas fa-info-circle"></i><span id="modal-desc"></span></div>
       </div>
+    </div>
+  </div>
+
+  <!-- PROJECT MODAL (video / gallery) -->
+  <div class="cert-modal" id="projModal">
+    <div class="cert-modal-backdrop" onclick="closeProject()"></div>
+    <div class="cert-modal-box proj-modal-box">
+      <button class="cert-modal-close" onclick="closeProject()"><i class="fas fa-times"></i></button>
+      <div class="cert-modal-img-wrap" id="proj-media-wrap">
+        <video id="proj-video" controls></video>
+        <img class="cert-modal-img" id="proj-image" alt="Project screenshot" onclick="openLightbox('proj-image')">
+        <div class="proj-gallery-controls" id="proj-gallery-controls">
+          <button class="proj-gallery-btn prev" onclick="galleryNav(-1, event)"><i class="fas fa-chevron-left"></i></button>
+          <button class="proj-gallery-btn next" onclick="galleryNav(1, event)"><i class="fas fa-chevron-right"></i></button>
+          <div class="proj-gallery-counter" id="proj-gallery-counter"></div>
+        </div>
+      </div>
+      <h2 class="cert-modal-title" id="proj-title"></h2>
+      <p class="cert-modal-issuer" id="proj-desc"></p>
+      <div class="project-tech" id="proj-tech" style="margin-bottom:1.4rem;"></div>
+      <a href="#" id="proj-github" target="_blank" class="project-link">View Code →</a>
     </div>
   </div>
 
@@ -575,9 +661,9 @@
       document.body.style.overflow = '';
     }
 
-    // ── CERT IMAGE LIGHTBOX (click certificate image to view full size)
-    function openLightbox() {
-      const src = document.getElementById('modal-cert-img').dataset.full;
+    // ── IMAGE LIGHTBOX (click a certificate or project image to view full size)
+    function openLightbox(elId) {
+      const src = document.getElementById(elId || 'modal-cert-img').dataset.full;
       if (!src) return;
       document.getElementById('lightbox-img').src = src;
       document.getElementById('certLightbox').classList.add('open');
@@ -586,8 +672,72 @@
       document.getElementById('certLightbox').classList.remove('open');
     }
 
+    // ── PROJECT MODAL (video demo or screenshot gallery)
+    let galleryImages = [];
+    let galleryIndex = 0;
+
+    function openProject(type, title, desc, tech, github, media) {
+      const wrap        = document.getElementById('proj-media-wrap');
+      const videoEl      = document.getElementById('proj-video');
+      const imgEl        = document.getElementById('proj-image');
+      const galleryCtrls = document.getElementById('proj-gallery-controls');
+
+      document.getElementById('proj-title').textContent = title;
+      document.getElementById('proj-desc').textContent = desc;
+      document.getElementById('proj-tech').innerHTML = tech.map(t => `<span class="tech-tag">${t}</span>`).join('');
+      document.getElementById('proj-github').href = github;
+
+      // reset media state
+      videoEl.pause();
+      videoEl.removeAttribute('src');
+      videoEl.style.display = 'none';
+      imgEl.style.display = 'none';
+      galleryCtrls.style.display = 'none';
+      wrap.classList.remove('visible');
+
+      if (type === 'video') {
+        videoEl.src = media;
+        videoEl.style.display = 'block';
+        wrap.classList.add('visible');
+      } else if (type === 'gallery') {
+        galleryImages = media;
+        galleryIndex = 0;
+        imgEl.style.display = 'block';
+        updateGalleryImage();
+        if (galleryImages.length > 1) galleryCtrls.style.display = 'block';
+        wrap.classList.add('visible');
+      }
+
+      document.getElementById('projModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function updateGalleryImage() {
+      const imgEl = document.getElementById('proj-image');
+      imgEl.src = galleryImages[galleryIndex];
+      imgEl.dataset.full = galleryImages[galleryIndex];
+      document.getElementById('proj-gallery-counter').textContent = (galleryIndex + 1) + ' / ' + galleryImages.length;
+    }
+
+    function galleryNav(dir, e) {
+      if (e) e.stopPropagation();
+      if (!galleryImages.length) return;
+      galleryIndex = (galleryIndex + dir + galleryImages.length) % galleryImages.length;
+      updateGalleryImage();
+    }
+
+    function closeProject() {
+      document.getElementById('projModal').classList.remove('open');
+      document.getElementById('proj-video').pause();
+      document.body.style.overflow = '';
+    }
+
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeLightbox(); closeCert(); }
+      if (e.key === 'Escape') { closeLightbox(); closeCert(); closeProject(); }
+      if (document.getElementById('projModal').classList.contains('open')) {
+        if (e.key === 'ArrowRight') galleryNav(1);
+        if (e.key === 'ArrowLeft') galleryNav(-1);
+      }
     });
   </script>
 </body>
