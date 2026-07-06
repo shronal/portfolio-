@@ -8,6 +8,99 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Certificate modal image (added) ── */
+    .cert-modal-box { max-width: 560px; }
+
+    .cert-modal-img-wrap {
+      display: none;
+      width: calc(100% + 5rem);
+      margin: -2.5rem -2.5rem 1.75rem;
+      max-height: 340px;
+      overflow: hidden;
+      border-radius: 20px 20px 0 0;
+      background: var(--deep2, #012e2a);
+      position: relative;
+      border: 10px solid #013E37;
+      border-bottom: none;
+      box-sizing: border-box;
+    }
+    .cert-modal-img-wrap.visible { display: block; }
+    .cert-modal-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      box-shadow: inset 0 -40px 40px -30px rgba(1,30,27,0.55);
+      pointer-events: none;
+    }
+    .cert-modal-img {
+      display: block;
+      width: 100%;
+      max-height: 340px;
+      object-fit: contain;
+      background: #fdfbf3;
+      cursor: zoom-in;
+      transition: transform 0.4s ease;
+    }
+    .cert-modal-img:hover { transform: scale(1.02); }
+    .cert-modal-pdf {
+      display: none;
+      width: 100%;
+      height: 340px;
+      border: none;
+      background: #fdfbf3;
+    }
+    @media (max-width: 600px) {
+      .cert-modal-pdf { height: 240px; }
+    }
+
+    /* When an image is showing, shrink the icon so it doesn't dominate */
+    .cert-modal-img-wrap.visible ~ .cert-modal-icon { display: none; }
+
+    /* Fullscreen lightbox for the certificate image */
+    .cert-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(1, 15, 13, 0.94);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      cursor: zoom-out;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .cert-lightbox.open { display: flex; opacity: 1; }
+    .cert-lightbox img {
+      max-width: 92vw;
+      max-height: 88vh;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 20px 70px rgba(0,0,0,0.55);
+    }
+    .cert-lightbox-close {
+      position: absolute;
+      top: 26px;
+      right: 34px;
+      color: #ffefb3;
+      font-size: 26px;
+      background: rgba(255,239,179,0.1);
+      border: 1.5px solid rgba(255,239,179,0.25);
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s ease;
+    }
+    .cert-lightbox-close:hover { background: rgba(255,239,179,0.22); }
+
+    @media (max-width: 600px) {
+      .cert-modal-box { padding: 1.6rem; }
+      .cert-modal-img-wrap { width: calc(100% + 3.2rem); margin: -1.6rem -1.6rem 1.4rem; max-height: 240px; }
+      .cert-modal-img { max-height: 240px; }
+    }
+  </style>
 </head>
 <body>
 
@@ -72,6 +165,7 @@
         <div class="project-card reveal"><div class="project-header"><i class="fas fa-tree"></i></div><div class="project-content"><h3 class="project-title">Tree Traversal Visualizer</h3><p class="project-desc">An interactive DSA visualizer demonstrating binary tree traversals with graphics.h.</p><div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics</span><span class="tech-tag">DSA</span></div><a href="https://github.com/shronal/tree_traversal" target="_blank" class="project-link">View Code →</a></div></div>
         <!-- <div class="project-card reveal"><div class="project-header"><i class="fas fa-book"></i></div><div class="project-content"><h3 class="project-title">Book Exchange Platform</h3><p class="project-desc">A Django-based platform for students to donate, borrow, and exchange books within the community.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">SQLite</span><span class="tech-tag">Bootstrap</span></div><a href="https://github.com/shronal/book_exchange" target="_blank" class="project-link">View Code →</a></div></div> -->
         <div class="project-card reveal"><div class="project-header"><i class="fas fa-calendar"></i></div><div class="project-content"><h3 class="project-title">KhEC Event Flow</h3><p class="project-desc">A comprehensive event management system for college-level events with admin, organizer, and user roles.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">Bootstrap</span></div><a href="https://github.com/shronal/khec_ems" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal"><div class="project-header"><i class="fas fa-landmark"></i></div><div class="project-content"><h3 class="project-title">GovSewa</h3><p class="project-desc">An AI-powered government service guidance platform helping citizens access information, procedures, and public services efficiently.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">AI/ML</span><span class="tech-tag">PostgreSQL</span></div><a href="" target="_blank" class="project-link">Building →</a></div></div>
       </div>
     </div>
   </section>
@@ -201,7 +295,7 @@
 
       <div class="cert-grid">
 
-        <div class="cert-card reveal" onclick="openCert('Government Service','National Economic Census 2026 — Enumerator Certificate','Central Bureau of Statistics, Government of Nepal','April – June 2026','fas fa-landmark','Official government appointment as a census enumerator for the National Economic Census 2026.')">
+        <div class="cert-card reveal" onclick="openCert('Government Service','National Economic Census 2026 — Enumerator Certificate','Central Bureau of Statistics, Government of Nepal','April – June 2026','fas fa-landmark','Official government appointment as a census enumerator for the National Economic Census 2026.','Images/Certificates/census.jpg')">
           <div class="cert-img-wrap">
             <div class="cert-blueprint">
               <div class="cert-bp-icon"><i class="fas fa-landmark"></i></div>
@@ -218,7 +312,7 @@
           </div>
         </div>
 
-        <div class="cert-card reveal" onclick="openCert('International Internship','Nobel Fundamentals Program — Completion Certificate','Global Nobel Internship','2025 / 2026','fas fa-globe','Successfully completed 90 hours of the Nobel Fundamentals Internship Program covering web design, leadership, and communication.')">
+        <div class="cert-card reveal" onclick="openCert('International Internship','Nobel Fundamentals Program — Completion Certificate','Global Nobel Internship','2025 / 2026','fas fa-globe','Successfully completed 90 hours of the Nobel Fundamentals Internship Program covering web design, leadership, and communication.','Images/Certificates/nobel.pdf')">
           <div class="cert-img-wrap">
             <div class="cert-blueprint">
               <div class="cert-bp-icon"><i class="fas fa-globe"></i></div>
@@ -235,7 +329,7 @@
           </div>
         </div>
 
-        <div class="cert-card reveal" onclick="openCert('Conference','Khwopa CEEL 2026 — Participation Certificate','Khwopa Engineering College','2026','fas fa-microphone','Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering.')">
+        <div class="cert-card reveal" onclick="openCert('Conference','Khwopa CEEL 2026 — Participation Certificate','Khwopa Engineering College','2026','fas fa-microphone','Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering.','Images/Certificates/khec-ceel.jpeg')">
           <div class="cert-img-wrap">
             <div class="cert-blueprint">
               <div class="cert-bp-icon"><i class="fas fa-microphone"></i></div>
@@ -295,7 +389,11 @@
     <div class="cert-modal-backdrop" onclick="closeCert()"></div>
     <div class="cert-modal-box">
       <button class="cert-modal-close" onclick="closeCert()"><i class="fas fa-times"></i></button>
-      <div class="cert-modal-icon"><i id="modal-icon" class="fas fa-landmark"></i></div>
+      <div class="cert-modal-img-wrap" id="modal-img-wrap">
+        <img class="cert-modal-img" id="modal-cert-img" alt="Certificate" onclick="openLightbox()">
+        <embed class="cert-modal-pdf" id="modal-cert-pdf" type="application/pdf">
+      </div>
+      <div class="cert-modal-icon" id="modal-icon-wrap"><i id="modal-icon" class="fas fa-landmark"></i></div>
       <p class="cert-modal-type" id="modal-type"></p>
       <h2 class="cert-modal-title" id="modal-title"></h2>
       <p class="cert-modal-issuer" id="modal-issuer"></p>
@@ -304,6 +402,12 @@
         <div class="cert-modal-row"><i class="fas fa-info-circle"></i><span id="modal-desc"></span></div>
       </div>
     </div>
+  </div>
+
+  <!-- CERTIFICATE IMAGE LIGHTBOX -->
+  <div class="cert-lightbox" id="certLightbox" onclick="closeLightbox()">
+    <button class="cert-lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
+    <img id="lightbox-img" src="" alt="Certificate full view">
   </div>
 
   <!-- SKILLS -->
@@ -428,13 +532,41 @@
     document.querySelectorAll('.timeline-item').forEach(el => tlObs.observe(el));
 
     // ── CERT MODAL
-    function openCert(type, title, issuer, date, iconClass, desc) {
+    function openCert(type, title, issuer, date, iconClass, desc, imgSrc) {
+      const imgWrap = document.getElementById('modal-img-wrap');
+      const imgEl   = document.getElementById('modal-cert-img');
+      const pdfEl   = document.getElementById('modal-cert-pdf');
+
       document.getElementById('modal-icon').className = iconClass;
       document.getElementById('modal-type').textContent = type;
       document.getElementById('modal-title').textContent = title;
       document.getElementById('modal-issuer').textContent = issuer;
       document.getElementById('modal-date').textContent = date;
       document.getElementById('modal-desc').textContent = desc;
+
+      const isPdf = imgSrc && imgSrc.toLowerCase().endsWith('.pdf');
+
+      if (imgSrc && isPdf) {
+        imgEl.style.display = 'none';
+        imgEl.removeAttribute('src');
+        pdfEl.style.display = 'block';
+        pdfEl.src = imgSrc;
+        pdfEl.dataset.full = imgSrc;
+        imgWrap.classList.add('visible');
+      } else if (imgSrc) {
+        pdfEl.style.display = 'none';
+        pdfEl.removeAttribute('src');
+        imgEl.style.display = 'block';
+        imgEl.onerror = () => { imgWrap.classList.remove('visible'); };
+        imgEl.onload  = () => { imgWrap.classList.add('visible'); };
+        imgEl.src = imgSrc;
+        imgEl.dataset.full = imgSrc;
+      } else {
+        imgWrap.classList.remove('visible');
+        imgEl.removeAttribute('src');
+        pdfEl.removeAttribute('src');
+      }
+
       document.getElementById('certModal').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -442,7 +574,21 @@
       document.getElementById('certModal').classList.remove('open');
       document.body.style.overflow = '';
     }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCert(); });
+
+    // ── CERT IMAGE LIGHTBOX (click certificate image to view full size)
+    function openLightbox() {
+      const src = document.getElementById('modal-cert-img').dataset.full;
+      if (!src) return;
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('certLightbox').classList.add('open');
+    }
+    function closeLightbox() {
+      document.getElementById('certLightbox').classList.remove('open');
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeLightbox(); closeCert(); }
+    });
   </script>
 </body>
 </html>
