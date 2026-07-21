@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle</title>
+    <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Tekno / Cyberpunk Vibe) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- MediaPipe Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.3.1675466867/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675469077/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #050505; font-family: 'Segoe UI', sans-serif; }
+        .font-tech { font-family: 'Orbitron', sans-serif; }
+        canvas { display: block; width: 100vw; height: 100vh; object-fit: cover; }
+        .hidden { display: none !important; }
+        
+        /* Card Styles */
+        .mode-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .mode-card-single { border-color: rgba(0, 255, 255, 0.4); }
+        .mode-card-single:hover, .mode-card-single.selected { 
+            background-color: rgba(0, 255, 255, 0.1); 
+            border-color: #00FFFF;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+        .mode-card-multi { border-color: rgba(255, 0, 255, 0.4); }
+        .mode-card-multi:hover, .mode-card-multi.selected { 
+            background-color: rgba(255, 0, 255, 0.1); 
+            border-color: #FF00FF;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+        }
+
+        /* Glowing Button */
+        .btn-glow {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 1);
+        }
+
+        /* Difficulty Buttons */
+        .diff-btn {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #diff-easy.selected { background-color: rgba(0, 255, 255, 0.2); border-color: #00FFFF; box-shadow: 0 0 10px rgba(0, 255, 255, 0.4); }
+        #diff-medium.selected { background-color: rgba(234, 179, 8, 0.2); border-color: #EAB308; box-shadow: 0 0 10px rgba(234, 179, 8, 0.4); }
+        #diff-hard.selected { background-color: rgba(249, 115, 22, 0.2); border-color: #F97316; box-shadow: 0 0 10px rgba(249, 115, 22, 0.4); }
+        #diff-intense.selected { background-color: rgba(239, 68, 68, 0.2); border-color: #EF4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+    </style>
+</head>
+<body>
+
+    <!-- UI Overlay (Main Menu) -->
+    <div id="ui-layer" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#050505]/90 backdrop-blur-sm transition-opacity duration-500">
+        
+        <!-- Title -->
+        <h1 class="text-5xl md:text-6xl font-tech font-black tracking-widest uppercase mb-12 drop-shadow-lg text-center">
+            <span class="text-cyan-400 drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]">YOUR FACE</span><br/>
+            <span class="text-pink-500 drop-shadow-[0_0_10px_rgba(255,0,255,0.8)]">PUZZLE</span>
+        </h1>
+
+        <!-- Mode Selection Cards -->
+        <div class="flex flex-col md:flex-row gap-6 mb-10">
+            <!-- Single Player Card -->
+            <div id="card-single" class="mode-card mode-card-single border-2 rounded-xl p-6 w-64 md:w-72 flex flex-col items-center text-center">
+                <span class="font-tech font-bold text-lg text-cyan-400 mb-2">SINGLE PLAYER</span>
+                <p class="text-gray-400 text-sm">Play alone!<br>Solve your face puzzle as fast as possible.</p>
+            </div>
+
+            <!-- Multiplayer Card -->
+            <div id="card-multi" class="mode-card mode-card-multi border-2 rounded-xl p-6 w-64 md:w-72 flex flex-col items-center text-center">
+                <span class="font-tech font-bold text-lg text-pink-500 mb-2">MULTIPLAYER</span>
+                <p class="text-gray-400 text-sm">More fun with two players!<br>Whoever finishes first wins.</p>
+            </div>
+        </div>
+
+        <!-- Difficulty Selection -->
+        <div class="flex flex-col items-center mb-10">
+            <p class="font-tech font-bold text-white mb-3 tracking-widest text-sm">DIFFICULTY:</p>
+            <div class="flex flex-wrap justify-center gap-3 px-4">
+                <button id="diff-easy" class="diff-btn font-tech font-bold border-2 border-cyan-400/40 text-cyan-400 hover:bg-cyan-400/10 px-5 py-2 rounded-full transition-all text-xs selected">EASY (2x2)</button>
+                <button id="diff-medium" class="diff-btn font-tech font-bold border-2 border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 px-5 py-2 rounded-full transition-all text-xs">MEDIUM (3x3)</button>
+                <button id="diff-hard" class="diff-btn font-tech font-bold border-2 border-orange-500/40 text-orange-500 hover:bg-orange-500/10 px-5 py-2 rounded-full transition-all text-xs">HARD (4x4)</button>
+                <button id="diff-intense" class="diff-btn font-tech font-bold border-2 border-red-500/40 text-red-500 hover:bg-red-500/10 px-5 py-2 rounded-full transition-all text-xs">INTENSE (5x5)</button>
+            </div>
+        </div>
+
+        <!-- Rules -->
+        <div class="text-center mb-10">
+            <p class="font-tech font-bold text-white mb-2 tracking-widest">RULES:</p>
+            <p class="text-gray-300 text-sm md:text-base max-w-md mx-auto">
+                Use your hands to screenshot your face.<br>
+                Then arrange the puzzle pieces by pinching your fingers!
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col gap-4 items-center">
+            <button id="btn-start-cam" class="font-tech bg-white text-black font-extrabold text-lg px-12 py-3 rounded-full w-72 cursor-not-allowed" disabled>
+                LOADING CAMERA...
+            </button>
+            <button id="btn-start-game" class="font-tech bg-gray-700 text-gray-400 font-extrabold text-lg px-12 py-3 rounded-full transition-all duration-300 w-72 cursor-not-allowed" disabled>
+                Start Game
+            </button>
+        </div>
+
+
+    </div>
+
+    <!-- Win Screen Overlay -->
+    <div id="win-screen" class="hidden absolute inset-0 z-[60] flex flex-col items-center justify-center bg-black/85 backdrop-blur-sm transition-opacity duration-500 px-4">
+        
+        <!-- Unified Win Card -->
+        <div id="win-card" class="flex flex-col items-center justify-center p-8 md:p-10 border-2 bg-[#0a0a0f]/90 backdrop-blur-md rounded-2xl transition-all max-w-lg w-full shadow-lg">
+            
+            <!-- Winner Title -->
+            <h2 id="win-title" class="font-tech text-4xl md:text-5xl font-black mb-6 tracking-wider uppercase text-center"></h2>
+            
+            <!-- Image Container inside Card -->
+            <div class="p-2 border border-gray-600 bg-black rounded-lg mb-6 shadow-inner">
+                <img id="win-image" class="w-56 h-56 md:w-72 md:h-72 object-cover rounded" alt="Puzzle Completed" />
+            </div>
+            
+            <!-- Time -->
+            <p id="win-time" class="font-tech text-2xl md:text-3xl font-bold mb-8 text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]"></p>
+            
+            <!-- Play Again Button inside Card -->
+            <button id="btn-play-again" class="font-tech bg-white text-black font-extrabold text-lg md:text-xl px-10 py-3 rounded-full btn-glow w-full max-w-xs hover:bg-gray-200">
+                PLAY AGAIN
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Gameplay Video & Canvas -->
+    <video id="webcam" autoplay playsinline class="hidden"></video>
+    <canvas id="game-canvas"></canvas>
+
+    <script>
+        // --- KONFIGURASI GAME ---
+        const PINCH_THRESHOLD = 30; 
+        const HAND_CONNECTIONS = [
+            [0, 1], [1, 2], [2, 3], [3, 4], 
+            [0, 5], [5, 6], [6, 7], [7, 8], 
+            [5, 9], [9, 10], [10, 11], [11, 12], 
+            [9, 13], [13, 14], [14, 15], [15, 16], 
+            [13, 17], [0, 17], [17, 18], [18, 19], [19, 20] 
+        ];
+
+        const COLOR_P1 = "#00FFFF"; // Neon Cyan
+        const COLOR_P2 = "#FF00FF"; // Neon Pink
+
+        // --- ELEMEN DOM ---
+        const videoElement = document.getElementById('webcam');
+        const canvasElement = document.getElementById('game-canvas');
+        const ctx = canvasElement.getContext('2d', { willReadFrequently: true });
+        
+        // UI Layers
+        const uiLayer = document.getElementById('ui-layer');
+        const winScreen = document.getElementById('win-screen');
+        
+        // Menu Elements
+        const cardSingle = document.getElementById('card-single');
+        const cardMulti = document.getElementById('card-multi');
+        const btnStartCam = document.getElementById('btn-start-cam');
+        const btnStartGame = document.getElementById('btn-start-game');
+        
+        // Win Screen Elements
+        const winTitle = document.getElementById('win-title');
+        const winCard = document.getElementById('win-card');
+        const winImage = document.getElementById('win-image');
+        const winTime = document.getElementById('win-time');
+        const btnPlayAgain = document.getElementById('btn-play-again');
+
+        // --- STATE GLOBAL ---
+        let selectedMode = null; // 'single' atau 'multi'
+        let isCameraOn = false;
+        let isPlaying = false; 
+        let players = []; 
+        let globalWinner = null; 
+        let gridSize = 2; // Default 2x2 (Easy)
+
+        function resizeCanvas() {
+            canvasElement.width = window.innerWidth;
+            canvasElement.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // --- UPDATE MENU UI ---
+        function updateMenuUI() {
+            // Update Card Styles
+            if (selectedMode === 'single') {
+                cardSingle.classList.add('selected');
+                cardMulti.classList.remove('selected');
+            } else if (selectedMode === 'multi') {
+                cardMulti.classList.add('selected');
+                cardSingle.classList.remove('selected');
+            } else {
+                cardSingle.classList.remove('selected');
+                cardMulti.classList.remove('selected');
+            }
+
+            // Update Start Game Button Status
+            if (isCameraOn && selectedMode) {
+                btnStartGame.classList.remove('bg-gray-700', 'text-gray-400', 'cursor-not-allowed');
+                btnStartGame.classList.add('bg-white', 'text-black', 'btn-glow', 'cursor-pointer');
+                btnStartGame.disabled = false;
+            } else {
+                btnStartGame.classList.add('bg-gray-700', 'text-gray-400', 'cursor-not-allowed');
+                btnStartGame.classList.remove('bg-white', 'text-black', 'btn-glow', 'cursor-pointer');
+                btnStartGame.disabled = true;
+            }
+        }
+
+        // Event Listeners Menu
+        cardSingle.addEventListener('click', () => { selectedMode = 'single'; updateMenuUI(); });
+        cardMulti.addEventListener('click', () => { selectedMode = 'multi'; updateMenuUI(); });
+
+        // Difficulty Selection Event Listeners
+        const diffButtons = {
+            2: document.getElementById('diff-easy'),
+            3: document.getElementById('diff-medium'),
+            4: document.getElementById('diff-hard'),
+            5: document.getElementById('diff-intense')
+        };
+
+        Object.keys(diffButtons).forEach(size => {
+            const btn = diffButtons[size];
+            btn.addEventListener('click', () => {
+                gridSize = parseInt(size);
+                // Remove selected class from all difficulty buttons
+                Object.values(diffButtons).forEach(b => b.classList.remove('selected'));
+                // Add selected class to the clicked button
+                btn.classList.add('selected');
+            });
+        });
+
+        btnStartCam.addEventListener('click', () => {
+            if (!isCameraOn) {
+                btnStartCam.innerText = "LOADING CAMERA...";
+                btnStartCam.classList.remove('btn-glow');
+                btnStartCam.disabled = true;
+                camera.start().catch(err => {
+                    console.error("Camera start failed:", err);
+                    btnStartCam.innerText = "ALLOW CAMERA ACCESS";
+                    btnStartCam.disabled = false;
+                    btnStartCam.classList.add('btn-glow');
+                });
+            }
+        });
+
+        // Called when the first frame is successfully processed by MediaPipe
+        function cameraReady() {
+            if (!isCameraOn) {
+                isCameraOn = true;
+                btnStartCam.innerText = "CAMERA ACTIVE";
+                btnStartCam.classList.remove('bg-white', 'text-black');
+                btnStartCam.classList.add('bg-transparent', 'text-cyan-400', 'border', 'border-cyan-400');
+                btnStartCam.disabled = true;
+                updateMenuUI();
+            }
+        }
+
+        btnStartGame.addEventListener('click', () => {
+            if (isCameraOn && selectedMode) {
+                uiLayer.classList.add('hidden');
+                players = [];
+                if (selectedMode === 'single') {
+                    players.push(new Player(1, { x: 0, y: 0, w: canvasElement.width, h: canvasElement.height }, COLOR_P1));
+                } else {
+                    let halfW = canvasElement.width / 2;
+                    players.push(new Player(1, { x: 0, y: 0, w: halfW, h: canvasElement.height }, COLOR_P1));
+                    players.push(new Player(2, { x: halfW, y: 0, w: halfW, h: canvasElement.height }, COLOR_P2));
+                }
+                globalWinner = null;
+                isPlaying = true;
+            }
+        });
+
+        btnPlayAgain.addEventListener('click', () => {
+            winScreen.classList.add('hidden');
+            uiLayer.classList.remove('hidden');
+            // Reset state
+            selectedMode = null;
+            isPlaying = false;
+            players = [];
+            globalWinner = null;
+            updateMenuUI();
+        });
+
+
+        // --- FUNGSI WIN OVERLAY GLOBAL ---
+        function triggerWinScreen(winnerPlayer) {
+            isPlaying = false; // Hentikan interaksi canvas puzzle
+
+            // Ekstrak puzzle yang sudah jadi ke canvas sementara
+            let tempCanvas = document.createElement('canvas');
+            tempCanvas.width = winnerPlayer.box.w;
+            tempCanvas.height = winnerPlayer.box.h;
+            let tctx = tempCanvas.getContext('2d');
+            
+            // Gambar potongan kepingan sesuai urutan sebenarnya
+            winnerPlayer.pieces.forEach(p => {
+                tctx.drawImage(p.image, p.drawX - winnerPlayer.box.x, p.drawY - winnerPlayer.box.y);
+            });
+
+            // Set gambar ke UI overlay
+            winImage.src = tempCanvas.toDataURL('image/png');
+            winTime.innerText = `TIME: ${winnerPlayer.formatTime(winnerPlayer.elapsedTime)}`;
+
+            // Sesuaikan tema warna dari Keseluruhan Card
+            if (selectedMode === 'multi') {
+                winTitle.innerText = `PLAYER ${winnerPlayer.id} WINS!`;
+                winTitle.style.color = winnerPlayer.color;
+                winTitle.style.textShadow = `0 0 15px ${winnerPlayer.color}`;
+                winCard.style.borderColor = winnerPlayer.color;
+                winCard.style.boxShadow = `0 0 30px ${winnerPlayer.color}66`; // Alpha Hex
+            } else {
+                winTitle.innerText = `COMPLETED!`;
+                winTitle.style.color = COLOR_P1;
+                winTitle.style.textShadow = `0 0 15px ${COLOR_P1}`;
+                winCard.style.borderColor = COLOR_P1;
+                winCard.style.boxShadow = `0 0 30px ${COLOR_P1}66`;
+            }
+
+            // Tampilkan Screen Kemenangan
+            winScreen.classList.remove('hidden');
+        }
+
+
+        // --- CLASS PLAYER ---
+        class Player {
+            constructor(id, bounds, color) {
+                this.id = id;
+                this.bounds = bounds; 
+                this.color = color;
+                this.state = 'CALIBRATING'; // CALIBRATING, WAITING, PLAYING, SOLVED, LOSE
+                this.box = null; 
+                this.pieces = []; 
+                this.slots = []; 
+                this.heldPieceIndex = -1;
+                this.startTime = null;
+                this.elapsedTime = 0;
+                this.intervalId = null;
+                this.isPinching = false;
+                this.smoothedCursor = null;
+            }
+
+            update(handsData) {
+                if (this.state === 'CALIBRATING') {
+                    this.handleCalibration(handsData);
+                } else if (this.state === 'WAITING') {
+                    this.drawWaiting();
+                } else if (this.state === 'PLAYING') {
+                    this.handleGameplay(handsData);
+                } else if (this.state === 'LOSE') {
+                    this.drawWaiting(true); // Gambar beku
+                }
+            }
+
+            handleCalibration(handsData) {
+                // Teks Instruksi Neon
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.font = "bold 28px 'Orbitron', sans-serif";
+                ctx.textAlign = "center";
+                let msgX = this.bounds.x + this.bounds.w / 2;
+                ctx.fillText(`PLAYER ${this.id}: Raise Both Hands`, msgX, 60);
+                
+                ctx.font = "20px 'Segoe UI', sans-serif";
+                ctx.shadowBlur = 5;
+                ctx.fillText(`Stretch index finger & thumb to make a box.`, msgX, 95);
+                ctx.fillText(`Pinch both to take a photo!`, msgX, 125);
+                ctx.restore();
+
+                if (handsData.length >= 2) {
+                    let hA = handsData[0];
+                    let hB = handsData[1];
+
+                    let leftHand = hA[0].x < hB[0].x ? hA : hB;
+                    let rightHand = hA[0].x < hB[0].x ? hB : hA;
+
+                    let pLeftThumb = leftHand[4];
+                    let pRightIndex = rightHand[8];
+
+                    let left = Math.min(pLeftThumb.x, pRightIndex.x);
+                    let right = Math.max(pLeftThumb.x, pRightIndex.x);
+                    let top = Math.min(pLeftThumb.y, pRightIndex.y);
+                    let bottom = Math.max(pLeftThumb.y, pRightIndex.y);
+
+                    let w = right - left;
+                    let h = bottom - top;
+                    
+                    if (w > 50 && h > 50) {
+                        this.box = { x: left, y: top, w: w, h: h };
+
+                        ctx.save();
+                        ctx.strokeStyle = "white";
+                        ctx.shadowColor = "white";
+                        ctx.shadowBlur = 15;
+                        ctx.lineWidth = 4;
+                        ctx.strokeRect(this.box.x, this.box.y, this.box.w, this.box.h);
+                        ctx.restore();
+
+                        let pinchLeft = this.getDistance(leftHand[4], leftHand[8]) < PINCH_THRESHOLD;
+                        let pinchRight = this.getDistance(rightHand[4], rightHand[8]) < PINCH_THRESHOLD;
+
+                        // Add glowing line effect when about to snap the image in calibration
+                        if (pinchLeft) {
+                            ctx.save();
+                            ctx.strokeStyle = "white";
+                            ctx.shadowColor = "white";
+                            ctx.shadowBlur = 20;
+                            ctx.lineWidth = 6;
+                            ctx.beginPath();
+                            ctx.moveTo(leftHand[4].x, leftHand[4].y);
+                            ctx.lineTo(leftHand[8].x, leftHand[8].y);
+                            ctx.stroke();
+                            ctx.restore();
+                        }
+                        
+                        if (pinchRight) {
+                            ctx.save();
+                            ctx.strokeStyle = "white";
+                            ctx.shadowColor = "white";
+                            ctx.shadowBlur = 20;
+                            ctx.lineWidth = 6;
+                            ctx.beginPath();
+                            ctx.moveTo(rightHand[4].x, rightHand[4].y);
+                            ctx.lineTo(rightHand[8].x, rightHand[8].y);
+                            ctx.stroke();
+                            ctx.restore();
+                        }
+
+                        if (pinchLeft && pinchRight) {
+                            this.capturePuzzle();
+                        }
+                    }
+                }
+            }
+
+            capturePuzzle() {
+                let imageData = ctx.getImageData(this.box.x, this.box.y, this.box.w, this.box.h);
+                let tempCanvas = document.createElement('canvas');
+                tempCanvas.width = this.box.w;
+                tempCanvas.height = this.box.h;
+                tempCanvas.getContext('2d').putImageData(imageData, 0, 0);
+
+                let pieceW = this.box.w / gridSize;
+                let pieceH = this.box.h / gridSize;
+
+                this.pieces = [];
+                this.slots = [];
+                let totalPieces = gridSize * gridSize;
+
+                for (let i = 0; i < totalPieces; i++) {
+                    let row = Math.floor(i / gridSize);
+                    let col = i % gridSize;
+                    
+                    let pX = this.box.x + col * pieceW;
+                    let pY = this.box.y + row * pieceH;
+                    
+                    this.slots.push({ x: pX, y: pY, w: pieceW, h: pieceH });
+
+                    let pieceCanvas = document.createElement('canvas');
+                    pieceCanvas.width = pieceW;
+                    pieceCanvas.height = pieceH;
+                    pieceCanvas.getContext('2d').drawImage(tempCanvas, col*pieceW, row*pieceH, pieceW, pieceH, 0, 0, pieceW, pieceH);
+
+                    this.pieces.push({ id: i, currentSlot: i, image: pieceCanvas, drawX: pX, drawY: pY });
+                }
+
+                this.shufflePuzzle();
+                
+                if (selectedMode === 'multi') {
+                    this.state = 'WAITING';
+                } else {
+                    this.startPlaying();
+                }
+            }
+
+            shufflePuzzle() {
+                let slotIndices = [];
+                let totalPieces = gridSize * gridSize;
+                for (let i = 0; i < totalPieces; i++) {
+                    slotIndices.push(i);
+                }
+                for (let i = slotIndices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [slotIndices[i], slotIndices[j]] = [slotIndices[j], slotIndices[i]];
+                }
+                this.pieces.forEach((p, index) => {
+                    p.currentSlot = slotIndices[index];
+                    this.snapToSlot(p);
+                });
+            }
+
+            startPlaying() {
+                this.state = 'PLAYING';
+                this.startTime = Date.now();
+                this.intervalId = setInterval(() => {
+                    this.elapsedTime = Math.floor((Date.now() - this.startTime) / 1000);
+                }, 1000);
+            }
+
+            snapToSlot(piece) {
+                let slot = this.slots[piece.currentSlot];
+                piece.drawX = slot.x;
+                piece.drawY = slot.y;
+            }
+
+            drawWaiting(isLose = false) {
+                this.pieces.forEach((p) => {
+                    ctx.drawImage(p.image, p.drawX, p.drawY);
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)"; 
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(p.drawX, p.drawY, p.image.width, p.image.height);
+                });
+
+                if (!isLose) {
+                    ctx.save();
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 10;
+                    ctx.font = "bold 26px 'Orbitron', sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText("Waiting for opponent...", this.bounds.x + this.bounds.w/2, 60);
+                    ctx.restore();
+                }
+            }
+
+            handleGameplay(handsData) {
+                // Grid Background
+                ctx.save();
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+                ctx.lineWidth = 1;
+                this.slots.forEach(slot => ctx.strokeRect(slot.x, slot.y, slot.w, slot.h));
+                ctx.restore();
+
+                let cursor = null;
+                let pinching = false;
+
+                if (handsData.length > 0) {
+                    let h = handsData[0]; 
+                    let rawX = (h[4].x + h[8].x)/2;
+                    let rawY = (h[4].y + h[8].y)/2;
+
+                    if (!this.smoothedCursor) {
+                        this.smoothedCursor = { x: rawX, y: rawY };
+                    } else {
+                        const lerpFactor = 0.25; // Smooths movement, filters jitters
+                        this.smoothedCursor.x += (rawX - this.smoothedCursor.x) * lerpFactor;
+                        this.smoothedCursor.y += (rawY - this.smoothedCursor.y) * lerpFactor;
+                    }
+                    cursor = this.smoothedCursor;
+                    pinching = this.getDistance(h[4], h[8]) < PINCH_THRESHOLD;
+                    ctx.save();
+                    
+                    // Pulsing animation effect based on time
+                    let pulse = pinching ? Math.abs(Math.sin(Date.now() / 120)) * 6 : 0;
+                    let radius = pinching ? 12 + pulse : 8;
+                    
+                    ctx.fillStyle = pinching ? this.color : "rgba(255, 255, 255, 0.8)";
+                    ctx.shadowColor = pinching ? this.color : "white";
+                    ctx.shadowBlur = pinching ? 20 + pulse * 2 : 10;
+                    
+                    // Add glowing line (lightning) & cursor ring if pinching
+                    if (pinching) {
+                        ctx.strokeStyle = this.color;
+                        ctx.lineWidth = 4 + pulse/2;
+                        ctx.beginPath();
+                        ctx.moveTo(h[4].x, h[4].y);
+                        ctx.lineTo(h[8].x, h[8].y);
+                        ctx.stroke();
+
+                        ctx.beginPath();
+                        ctx.arc(cursor.x, cursor.y, radius + 10, 0, Math.PI*2);
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(cursor.x, cursor.y, radius, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.restore();
+                } else {
+                    this.smoothedCursor = null; // Reset tracking when hand leaves frame
+                }
+
+                if (pinching && !this.isPinching) {
+                    this.isPinching = true;
+                    if (cursor && this.heldPieceIndex === -1) {
+                        for (let i = 0; i < this.pieces.length; i++) {
+                            let p = this.pieces[i];
+                            let slot = this.slots[p.currentSlot];
+                            if (cursor.x >= slot.x && cursor.x <= slot.x + slot.w &&
+                                cursor.y >= slot.y && cursor.y <= slot.y + slot.h) {
+                                this.heldPieceIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                } else if (pinching && this.isPinching) {
+                    if (this.heldPieceIndex !== -1 && cursor) {
+                        let p = this.pieces[this.heldPieceIndex];
+                        p.drawX = cursor.x - this.slots[0].w/2;
+                        p.drawY = cursor.y - this.slots[0].h/2;
+                    }
+                } else if (!pinching && this.isPinching) {
+                    this.isPinching = false;
+                    if (this.heldPieceIndex !== -1 && cursor) {
+                        let heldPiece = this.pieces[this.heldPieceIndex];
+                        let targetSlotIndex = -1;
+                        let minDist = Infinity;
+                        
+                        for (let i = 0; i < this.slots.length; i++) {
+                            let slot = this.slots[i];
+                            let cx = slot.x + slot.w/2;
+                            let cy = slot.y + slot.h/2;
+                            let dist = this.getDistance(cursor, {x: cx, y: cy});
+                            if (dist < minDist) { minDist = dist; targetSlotIndex = i; }
+                        }
+
+                        if (targetSlotIndex !== -1 && targetSlotIndex !== heldPiece.currentSlot) {
+                            let pieceInTarget = this.pieces.find(p => p.currentSlot === targetSlotIndex);
+                            if (pieceInTarget) {
+                                pieceInTarget.currentSlot = heldPiece.currentSlot;
+                                this.snapToSlot(pieceInTarget);
+                            }
+                            heldPiece.currentSlot = targetSlotIndex;
+                        }
+                        
+                        this.snapToSlot(heldPiece);
+                        this.heldPieceIndex = -1;
+                        this.checkWin();
+                    }
+                }
+
+                // Render Kepingan
+                this.pieces.forEach((p, idx) => {
+                    if (idx !== this.heldPieceIndex) {
+                        ctx.drawImage(p.image, p.drawX, p.drawY);
+                        ctx.strokeStyle = "#222";
+                        ctx.strokeRect(p.drawX, p.drawY, p.image.width, p.image.height);
+                    }
+                });
+
+                // Render Special Piece (Being held / dragged)
+                if (this.heldPieceIndex !== -1) {
+                    let p = this.pieces[this.heldPieceIndex];
+                    ctx.globalAlpha = 0.85;
+                    ctx.drawImage(p.image, p.drawX, p.drawY);
+                    ctx.globalAlpha = 1.0;
+                    
+                    ctx.save();
+                    // Make the box pulse intensely when dragged
+                    let pulseGlow = Math.abs(Math.sin(Date.now() / 150)) * 15;
+                    ctx.strokeStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 15 + pulseGlow;
+                    ctx.lineWidth = 4 + pulseGlow / 4;
+                    ctx.strokeRect(p.drawX, p.drawY, p.image.width, p.image.height);
+                    ctx.restore();
+                }
+
+                // Cool Timer
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 15;
+                ctx.font = "bold 36px 'Orbitron', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(`TIME: ${this.formatTime(this.elapsedTime)}`, this.bounds.x + this.bounds.w/2, 60);
+                ctx.restore();
+            }
+
+            checkWin() {
+                let isWin = this.pieces.every(p => p.id === p.currentSlot);
+                if (isWin && this.state !== 'SOLVED') {
+                    this.state = 'SOLVED';
+                    clearInterval(this.intervalId);
+                    
+                    if (selectedMode === 'multi') {
+                        let loser = players.find(x => x.id !== this.id);
+                        if (loser) {
+                            loser.state = 'LOSE';
+                            clearInterval(loser.intervalId);
+                        }
+                    }
+                    
+                    // Call HTML Overlay function
+                    triggerWinScreen(this);
+                }
+            }
+
+            getDistance(p1, p2) {
+                return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+            }
+
+            formatTime(seconds) {
+                let m = Math.floor(seconds / 60).toString().padStart(2, '0');
+                let s = (seconds % 60).toString().padStart(2, '0');
+                return `${m}:${s}`;
+            }
+        }
+
+        // --- MENGGAMBAR SKELETON ---
+        function drawSkeleton(landmarks, color) {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 12; 
+            ctx.lineWidth = 3;
+
+            HAND_CONNECTIONS.forEach(conn => {
+                const p1 = landmarks[conn[0]];
+                const p2 = landmarks[conn[1]];
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.stroke();
+            });
+
+            landmarks.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 5, 0, 2*Math.PI);
+                ctx.fill();
+            });
+            ctx.restore();
+        }
+
+        // --- MEDIAPIPE CORE ---
+        function onResults(results) {
+            cameraReady(); // Trigger camera UI activation
+
+            ctx.save();
+            ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+            const canvasRatio = canvasElement.width / canvasElement.height;
+            const videoRatio = results.image.width / results.image.height;
+            let dw, dh, dx, dy;
+
+            if (canvasRatio > videoRatio) {
+                dw = canvasElement.width;
+                dh = canvasElement.width / videoRatio;
+                dx = 0;
+                dy = (canvasElement.height - dh) / 2;
+            } else {
+                dw = canvasElement.height * videoRatio;
+                dh = canvasElement.height;
+                dx = (canvasElement.width - dw) / 2;
+                dy = 0;
+            }
+
+            ctx.translate(canvasElement.width, 0);
+            ctx.scale(-1, 1);
+            ctx.filter = "brightness(0.5)"; // Selalu sedikit diredupkan agar puzzle dominan
+            ctx.drawImage(results.image, dx, dy, dw, dh);
+            ctx.filter = "none";
+            ctx.restore();
+
+            // Map landmarks to mirrored resolution
+            let mappedHands = [];
+            if (results.multiHandLandmarks) {
+                for (const landmarks of results.multiHandLandmarks) {
+                    let mapped = landmarks.map(lm => {
+                        let x = lm.x * dw + dx;
+                        let y = lm.y * dh + dy; 
+                        x = canvasElement.width - x; 
+                        return { x, y, z: lm.z };
+                    });
+                    mappedHands.push(mapped);
+                }
+            }
+
+            // If game is actively being played (UI is closed)
+            if (isPlaying && players.length > 0) {
+                
+                if (selectedMode === 'multi') {
+                    ctx.save();
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+                    ctx.shadowColor = "white";
+                    ctx.shadowBlur = 10;
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(canvasElement.width / 2, 0);
+                    ctx.lineTo(canvasElement.width / 2, canvasElement.height);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                let p1Hands = [];
+                let p2Hands = [];
+
+                if (selectedMode === 'single') {
+                    p1Hands = mappedHands;
+                } else if (selectedMode === 'multi') {
+                    mappedHands.forEach(hand => {
+                        let avgX = hand.reduce((sum, lm) => sum + lm.x, 0) / hand.length;
+                        if (avgX < canvasElement.width / 2) {
+                            p1Hands.push(hand);
+                        } else {
+                            p2Hands.push(hand);
+                        }
+                    });
+                }
+
+                if (players[0]) players[0].update(p1Hands);
+                if (players[1]) players[1].update(p2Hands);
+
+                if (selectedMode === 'multi') {
+                    let bothReady = players.every(p => p.state !== 'CALIBRATING');
+                    if (bothReady) {
+                        players.forEach(p => {
+                            if (p.state === 'WAITING') p.startPlaying();
+                        });
+                    }
+                }
+            }
+
+            // Draw Skeleton in all modes as long as camera is active
+            if (isPlaying && players.length > 0) {
+                if (selectedMode === 'single') {
+                    mappedHands.forEach(hand => drawSkeleton(hand, COLOR_P1));
+                } else {
+                    mappedHands.forEach(hand => {
+                        let avgX = hand.reduce((sum, lm) => sum + lm.x, 0) / hand.length;
+                        if (avgX < canvasElement.width / 2) drawSkeleton(hand, COLOR_P1);
+                        else drawSkeleton(hand, COLOR_P2);
+                    });
+                }
+            } else {
+                // Draw neutral skeleton when on main menu
+                mappedHands.forEach(hand => drawSkeleton(hand, "#FFFFFF"));
+            }
+        }
+
+        const hands = new Hands({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`;
+        }});
+
+        hands.setOptions({
+            maxNumHands: 2, 
+            modelComplexity: 0,
+            minDetectionConfidence: 0.6,
+            minTrackingConfidence: 0.6
+        });
+        
+        hands.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => { await hands.send({image: videoElement}); },
+            width: 640,
+            height: 360
+        });
+
+        // Auto-start camera on load to make access faster and pre-warm permissions
+        let loadingSteps = [
+            "REQUESTING WEBCAM...",
+            "DOWNLOADING DETECTOR...",
+            "COMPILING WEB-ASSEMBLY...",
+            "STARTING INFERENCE..."
+        ];
+        let stepIdx = 0;
+        btnStartCam.innerText = loadingSteps[0];
+        
+        let loadingInterval = setInterval(() => {
+            if (isCameraOn) {
+                clearInterval(loadingInterval);
+                return;
+            }
+            stepIdx = Math.min(stepIdx + 1, loadingSteps.length - 1);
+            btnStartCam.innerText = loadingSteps[stepIdx];
+        }, 2500);
+
+        camera.start().catch(err => {
+            clearInterval(loadingInterval);
+            console.error("Camera auto-start failed on load:", err);
+            btnStartCam.innerText = "ALLOW CAMERA ACCESS";
+            btnStartCam.disabled = false;
+            btnStartCam.classList.add('btn-glow');
+        });
+
+    </script>
+</body>
+</html>
