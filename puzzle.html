@@ -150,6 +150,7 @@
     <!-- Gameplay Video & Canvas -->
     <video id="webcam" autoplay playsinline class="hidden"></video>
     <canvas id="game-canvas"></canvas>
+    <canvas id="win-canvas" class="pointer-events-none fixed inset-0 z-[70] hidden"></canvas>
 
     <!-- Back Button (shown during gameplay) -->
     <button id="btn-back" class="hidden font-tech fixed top-5 left-5 z-40 bg-black/60 border-2 border-white/40 text-white font-bold px-5 py-2 rounded-full hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm text-sm tracking-widest">
@@ -211,6 +212,175 @@
         let matchCountdownActive = false;
         let matchCountdownStart = null;
         let matchStarted = false;
+        let btnBackDwellTimer = 0;
+
+        // --- RIBBON CELEBRATION & WIN AUDIO SYNTH ---
+        const winCanvas = document.getElementById('win-canvas');
+        const winCtx = winCanvas ? winCanvas.getContext('2d') : null;
+        let winRibbons = [];
+        let winAnimationId = null;
+
+        function resizeWinCanvas() {
+            if (winCanvas) {
+                winCanvas.width = window.innerWidth;
+                winCanvas.height = window.innerHeight;
+            }
+        }
+        window.addEventListener('resize', resizeWinCanvas);
+        resizeWinCanvas();
+
+        class RibbonParticle {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                const colors = ["#00FFFF", "#FF00FF", "#FFFF00", "#00FF66", "#FF3366", "#9933FF", "#FF9900", "#FFFFFF"];
+                this.x = Math.random() * window.innerWidth;
+                this.y = initial ? Math.random() * -window.innerHeight : -50 - Math.random() * 100;
+                this.w = 8 + Math.random() * 12;
+                this.h = 22 + Math.random() * 28;
+                this.vx = (Math.random() - 0.5) * 2.5;
+                this.vy = 3.2 + Math.random() * 4.2;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.rotX = Math.random() * Math.PI * 2;
+                this.rotY = Math.random() * Math.PI * 2;
+                this.rotZ = Math.random() * Math.PI * 2;
+                this.rotSpeedX = (Math.random() - 0.5) * 0.08;
+                this.rotSpeedY = (Math.random() - 0.5) * 0.08;
+                this.rotSpeedZ = (Math.random() - 0.5) * 0.05;
+                this.swayAmp = 12 + Math.random() * 20;
+                this.swaySpeed = 0.03 + Math.random() * 0.04;
+                this.swayPhase = Math.random() * Math.PI * 2;
+                this.isRibbon = Math.random() > 0.25;
+            }
+
+            update() {
+                this.swayPhase += this.swaySpeed;
+                this.x += this.vx + Math.sin(this.swayPhase) * 1.5;
+                this.y += this.vy;
+                this.rotX += this.rotSpeedX;
+                this.rotY += this.rotSpeedY;
+                this.rotZ += this.rotSpeedZ;
+
+                if (this.y > window.innerHeight + 60) {
+                    this.reset(false);
+                }
+            }
+
+            draw(c) {
+                c.save();
+                c.translate(this.x, this.y);
+                c.rotate(this.rotZ);
+
+                let scaleX = Math.cos(this.rotY);
+                let scaleY = Math.sin(this.rotX);
+                c.scale(scaleX, scaleY);
+
+                c.fillStyle = this.color;
+                c.shadowColor = this.color;
+                c.shadowBlur = 8;
+
+                if (this.isRibbon) {
+                    c.beginPath();
+                    c.moveTo(-this.w / 2, -this.h / 2);
+                    c.quadraticCurveTo(this.w, 0, -this.w / 2, this.h / 2);
+                    c.lineTo(this.w / 2, this.h / 2);
+                    c.quadraticCurveTo(-this.w, 0, this.w / 2, -this.h / 2);
+                    c.closePath();
+                    c.fill();
+                } else {
+                    c.fillRect(-this.w / 2, -this.h / 2, this.w, this.h);
+                }
+
+                c.restore();
+            }
+        }
+
+        function startWinRibbons() {
+            if (!winCanvas || !winCtx) return;
+            resizeWinCanvas();
+            winRibbons = [];
+            for (let i = 0; i < 160; i++) {
+                winRibbons.push(new RibbonParticle());
+            }
+            winCanvas.classList.remove('hidden');
+
+            if (winAnimationId) cancelAnimationFrame(winAnimationId);
+
+            function loop() {
+                winCtx.clearRect(0, 0, winCanvas.width, winCanvas.height);
+                winRibbons.forEach(p => {
+                    p.update();
+                    p.draw(winCtx);
+                });
+                winAnimationId = requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        function stopWinRibbons() {
+            if (winAnimationId) {
+                cancelAnimationFrame(winAnimationId);
+                winAnimationId = null;
+            }
+            if (winCanvas && winCtx) {
+                winCtx.clearRect(0, 0, winCanvas.width, winCanvas.height);
+                winCanvas.classList.add('hidden');
+            }
+        }
+
+        function playWinSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+
+                const notes = [
+                    { f: 261.63, t: 0.00, d: 0.14 },
+                    { f: 329.63, t: 0.12, d: 0.14 },
+                    { f: 392.00, t: 0.24, d: 0.14 },
+                    { f: 523.25, t: 0.36, d: 0.25 },
+                    { f: 659.25, t: 0.58, d: 0.20 },
+                    { f: 783.99, t: 0.76, d: 0.75 }
+                ];
+
+                notes.forEach(n => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(n.f, audioCtx.currentTime + n.t);
+
+                    gain.gain.setValueAtTime(0, audioCtx.currentTime + n.t);
+                    gain.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + n.t + 0.03);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + n.t + n.d);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + n.t);
+                    osc.stop(audioCtx.currentTime + n.t + n.d);
+                });
+
+                const shimmerChords = [523.25, 659.25, 783.99, 1046.50];
+                shimmerChords.forEach(freq => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + 0.76);
+
+                    gain.gain.setValueAtTime(0, audioCtx.currentTime + 0.76);
+                    gain.gain.linearRampToValueAtTime(0.14, audioCtx.currentTime + 0.76 + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.76 + 1.2);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + 0.76);
+                    osc.stop(audioCtx.currentTime + 0.76 + 1.2);
+                });
+            } catch (err) {
+                console.warn("Audio Context error:", err);
+            }
+        }
 
         function resizeCanvas() {
             canvasElement.width = window.innerWidth;
@@ -317,6 +487,10 @@
         function returnToMenu() {
             // Stop any running timers so they don't keep ticking in the background
             players.forEach(p => { if (p.intervalId) clearInterval(p.intervalId); });
+            stopWinRibbons();
+            btnBackDwellTimer = 0;
+            btnBack.classList.remove('border-cyan-400', 'bg-cyan-950/80', 'scale-110');
+            btnBack.style.boxShadow = "";
             winScreen.classList.add('hidden');
             btnBack.classList.add('hidden');
             uiLayer.classList.remove('hidden');
@@ -339,6 +513,9 @@
         function triggerWinScreen(winnerPlayer) {
             isPlaying = false; // Hentikan interaksi canvas puzzle
             btnBack.classList.add('hidden');
+            stopWinRibbons();
+            startWinRibbons();
+            playWinSound();
 
             // Ekstrak puzzle yang sudah jadi ke canvas sementara
             let tempCanvas = document.createElement('canvas');
@@ -397,6 +574,10 @@
                 this.shuffleStartTime = null;
                 this.shuffleDuration = 900; // ms
                 this.afterShuffleState = null;
+                this.referenceCanvas = null;
+                this.showReference = true;
+                this.toggleRect = null;
+                this.lastToggleTime = 0;
             }
 
             update(handsData) {
@@ -415,7 +596,13 @@
                 } else if (this.state === 'LOSE') {
                     this.drawWaiting(true); // Gambar beku
                 }
+
+                if (this.referenceCanvas && this.state !== 'CALIBRATING' && this.state !== 'COUNTDOWN') {
+                    this.drawReferencePreview(handsData);
+                }
             }
+
+
 
             // Wrist (0) to middle-finger knuckle (9) distance approximates hand size in
             // pixels for the current frame - used to normalize pinch detection.
@@ -575,6 +762,9 @@
                 tempCanvas.height = this.box.h;
                 tempCanvas.getContext('2d').putImageData(imageData, 0, 0);
 
+                this.referenceCanvas = tempCanvas;
+                this.showReference = true;
+
                 let pieceW = this.box.w / gridSize;
                 let pieceH = this.box.h / gridSize;
 
@@ -601,6 +791,134 @@
 
                 this.afterShuffleState = (selectedMode === 'multi') ? 'WAITING' : 'PLAYING';
                 this.shufflePuzzle();
+            }
+
+            drawReferencePreview(handsData) {
+                if (!this.referenceCanvas) return;
+
+                const previewSize = 105;
+                const headerH = 22;
+                const padding = 5;
+                const topMargin = 15;
+
+                const centerX = this.bounds.x + this.bounds.w / 2;
+                let boxX, boxY, boxW, boxH;
+
+                if (this.showReference) {
+                    boxW = previewSize + padding * 2;
+                    boxH = previewSize + headerH + padding * 2;
+                    boxX = centerX - boxW / 2;
+                    boxY = topMargin;
+                } else {
+                    boxW = 120;
+                    boxH = 26;
+                    boxX = centerX - boxW / 2;
+                    boxY = topMargin;
+                }
+
+                this.toggleRect = { x: boxX, y: boxY, w: boxW, h: boxH };
+
+                ctx.save();
+
+                if (this.showReference) {
+                    // Container background
+                    ctx.fillStyle = "rgba(10, 10, 15, 0.88)";
+                    ctx.strokeStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 10;
+                    ctx.lineWidth = 2;
+
+                    ctx.beginPath();
+                    if (ctx.roundRect) {
+                        ctx.roundRect(boxX, boxY, boxW, boxH, 8);
+                    } else {
+                        ctx.rect(boxX, boxY, boxW, boxH);
+                    }
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Header bar text
+                    ctx.fillStyle = this.color;
+                    ctx.font = "bold 11px 'Orbitron', sans-serif";
+                    ctx.textAlign = "left";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText("TARGET FACE", boxX + padding + 2, boxY + headerH / 2 + 1);
+
+                    // Eye Icon button at top-right
+                    ctx.textAlign = "right";
+                    ctx.font = "14px sans-serif";
+                    ctx.fillText("👁", boxX + boxW - padding - 2, boxY + headerH / 2 + 1);
+
+                    // Divider line
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(boxX + 2, boxY + headerH);
+                    ctx.lineTo(boxX + boxW - 2, boxY + headerH);
+                    ctx.stroke();
+
+                    // Target Image
+                    const imgX = boxX + padding;
+                    const imgY = boxY + headerH + padding;
+                    ctx.drawImage(this.referenceCanvas, imgX, imgY, previewSize, previewSize);
+
+                    // Border around image
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+                    ctx.strokeRect(imgX, imgY, previewSize, previewSize);
+                } else {
+                    // Collapsed Bar
+                    ctx.fillStyle = "rgba(10, 10, 15, 0.88)";
+                    ctx.strokeStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 8;
+                    ctx.lineWidth = 2;
+
+                    ctx.beginPath();
+                    if (ctx.roundRect) {
+                        ctx.roundRect(boxX, boxY, boxW, boxH, 13);
+                    } else {
+                        ctx.rect(boxX, boxY, boxW, boxH);
+                    }
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.font = "bold 11px 'Orbitron', sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText("TARGET 👁 SHOW", boxX + boxW / 2, boxY + boxH / 2 + 1);
+                }
+
+                ctx.restore();
+
+                // Gesture interaction check for toggle button
+                if (handsData && handsData.length > 0) {
+                    handsData.forEach(h => {
+                        let fingerTip = h[8];
+                        let handScale = this.getHandScale(h);
+                        let pinchDist = this.getDistance(h[4], h[8]);
+                        let isPinching = pinchDist < handScale * PINCH_CLOSE_RATIO;
+
+                        if (fingerTip.x >= boxX && fingerTip.x <= boxX + boxW &&
+                            fingerTip.y >= boxY && fingerTip.y <= boxY + boxH) {
+                            
+                            // Highlight box on hand hover
+                            ctx.save();
+                            ctx.strokeStyle = "#FFFFFF";
+                            ctx.lineWidth = 2;
+                            ctx.shadowColor = "#FFFFFF";
+                            ctx.shadowBlur = 12;
+                            ctx.strokeRect(boxX - 2, boxY - 2, boxW + 4, boxH + 4);
+                            ctx.restore();
+
+                            const now = Date.now();
+                            if (isPinching && (now - this.lastToggleTime > 400)) {
+                                this.showReference = !this.showReference;
+                                this.lastToggleTime = now;
+                            }
+                        }
+                    });
+                }
             }
 
             shufflePuzzle() {
@@ -671,9 +989,9 @@
                 ctx.fillStyle = this.color;
                 ctx.shadowColor = this.color;
                 ctx.shadowBlur = 10;
-                ctx.font = "bold 26px 'Orbitron', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("SHUFFLING...", this.bounds.x + this.bounds.w / 2, 60);
+                ctx.font = "bold 22px 'Orbitron', sans-serif";
+                ctx.textAlign = "right";
+                ctx.fillText("SHUFFLING...", this.bounds.x + this.bounds.w - 30, 45);
                 ctx.restore();
 
                 if (t >= 1) {
@@ -716,9 +1034,9 @@
                     ctx.fillStyle = this.color;
                     ctx.shadowColor = this.color;
                     ctx.shadowBlur = 10;
-                    ctx.font = "bold 26px 'Orbitron', sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.fillText("Waiting for opponent...", this.bounds.x + this.bounds.w/2, 60);
+                    ctx.font = "bold 22px 'Orbitron', sans-serif";
+                    ctx.textAlign = "right";
+                    ctx.fillText("Waiting for opponent...", this.bounds.x + this.bounds.w - 30, 45);
                     ctx.restore();
                 }
             }
@@ -741,9 +1059,9 @@
                 ctx.fillStyle = this.color;
                 ctx.shadowColor = this.color;
                 ctx.shadowBlur = 10;
-                ctx.font = "bold 26px 'Orbitron', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("BOTH READY - GET SET!", cx, 60);
+                ctx.font = "bold 22px 'Orbitron', sans-serif";
+                ctx.textAlign = "right";
+                ctx.fillText("GET SET!", this.bounds.x + this.bounds.w - 30, 45);
                 ctx.restore();
 
                 ctx.save();
@@ -907,9 +1225,9 @@
                 ctx.fillStyle = this.color;
                 ctx.shadowColor = this.color;
                 ctx.shadowBlur = 15;
-                ctx.font = "bold 36px 'Orbitron', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText(`TIME: ${this.formatTime(this.elapsedTime)}`, this.bounds.x + this.bounds.w/2, 60);
+                ctx.font = "bold 32px 'Orbitron', sans-serif";
+                ctx.textAlign = "right";
+                ctx.fillText(`TIME: ${this.formatTime(this.elapsedTime)}`, this.bounds.x + this.bounds.w - 30, 45);
                 ctx.restore();
             }
 
@@ -1065,7 +1383,96 @@
 
                 if (players[0]) players[0].update(p1Hands);
                 if (players[1]) players[1].update(p2Hands);
+
+                // --- BACK BUTTON GESTURE TOUCH CONTROL ---
+                if (btnBack && !btnBack.classList.contains('hidden')) {
+                    const btnRect = btnBack.getBoundingClientRect();
+                    const hitPadding = 25;
+                    const targetBox = {
+                        left: btnRect.left - hitPadding,
+                        top: btnRect.top - hitPadding,
+                        right: btnRect.right + hitPadding,
+                        bottom: btnRect.bottom + hitPadding
+                    };
+
+                    let touchingHand = null;
+                    let touchPos = null;
+                    let isPinchingBack = false;
+
+                    mappedHands.forEach(hand => {
+                        let indexTip = hand[8];
+                        let thumbTip = hand[4];
+                        let cursorX = (indexTip.x + thumbTip.x) / 2;
+                        let cursorY = (indexTip.y + thumbTip.y) / 2;
+
+                        if ((indexTip.x >= targetBox.left && indexTip.x <= targetBox.right && indexTip.y >= targetBox.top && indexTip.y <= targetBox.bottom) ||
+                            (cursorX >= targetBox.left && cursorX <= targetBox.right && cursorY >= targetBox.top && cursorY <= targetBox.bottom)) {
+                            touchingHand = hand;
+                            touchPos = { x: indexTip.x, y: indexTip.y };
+
+                            let pinchDist = Math.sqrt(Math.pow(indexTip.x - thumbTip.x, 2) + Math.pow(indexTip.y - thumbTip.y, 2));
+                            let wristDist = Math.sqrt(Math.pow(hand[0].x - hand[9].x, 2) + Math.pow(hand[0].y - hand[9].y, 2));
+                            if (pinchDist < wristDist * PINCH_CLOSE_RATIO) {
+                                isPinchingBack = true;
+                            }
+                        }
+                    });
+
+                    if (touchingHand && touchPos) {
+                        btnBackDwellTimer += 16;
+
+                        btnBack.classList.add('border-cyan-400', 'bg-cyan-950/80', 'scale-110');
+                        btnBack.style.boxShadow = "0 0 25px rgba(0, 255, 255, 0.9)";
+
+                        let progress = Math.min(btnBackDwellTimer / 750, 1.0);
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(touchPos.x, touchPos.y, 24, 0, Math.PI * 2);
+                        ctx.fillStyle = "rgba(0, 255, 255, 0.2)";
+                        ctx.fill();
+
+                        ctx.beginPath();
+                        ctx.arc(touchPos.x, touchPos.y, 24, -Math.PI / 2, -Math.PI / 2 + progress * Math.PI * 2);
+                        ctx.strokeStyle = "#00FFFF";
+                        ctx.lineWidth = 5;
+                        ctx.shadowColor = "#00FFFF";
+                        ctx.shadowBlur = 15;
+                        ctx.stroke();
+
+                        ctx.fillStyle = "#FFFFFF";
+                        ctx.shadowColor = "black";
+                        ctx.shadowBlur = 6;
+                        ctx.font = "bold 13px 'Orbitron', sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.fillText("HOLD BACK", touchPos.x, touchPos.y - 32);
+                        ctx.restore();
+
+                        if (progress >= 1.0 || isPinchingBack) {
+                            btnBackDwellTimer = 0;
+                            returnToMenu();
+                        }
+                    } else {
+                        btnBackDwellTimer = 0;
+                        btnBack.classList.remove('border-cyan-400', 'bg-cyan-950/80', 'scale-110');
+                        btnBack.style.boxShadow = "";
+                    }
+                }
             }
+
+        canvasElement.addEventListener('click', (e) => {
+            const rect = canvasElement.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            players.forEach(p => {
+                if (p.toggleRect) {
+                    let tr = p.toggleRect;
+                    if (clickX >= tr.x && clickX <= tr.x + tr.w && clickY >= tr.y && clickY <= tr.y + tr.h) {
+                        p.showReference = !p.showReference;
+                    }
+                }
+            });
+        });
 
             // Draw Skeleton in all modes as long as camera is active
             if (isPlaying && players.length > 0) {
