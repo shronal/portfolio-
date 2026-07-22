@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Face Puzzle</title>
+    <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts (Tekno / Cyberpunk Vibe) -->
@@ -163,6 +164,7 @@
         const PINCH_CLOSE_RATIO = 0.35; // fingers must get this close (relative to hand size) to START a pinch/grip
         const PINCH_OPEN_RATIO = 0.55;  // fingers must move this far apart to RELEASE a pinch/grip (hysteresis stops slipping)
         const COUNTDOWN_SECONDS = 3;    // 3...2...1 pose countdown before the face photo is captured
+        const MATCH_COUNTDOWN_SECONDS = 3; // synced "get ready" countdown before both players' timers start together
         const HAND_CONNECTIONS = [
             [0, 1], [1, 2], [2, 3], [3, 4], 
             [0, 5], [5, 6], [6, 7], [7, 8], 
@@ -204,6 +206,11 @@
         let players = []; 
         let globalWinner = null; 
         let gridSize = 2; // Default 2x2 (Easy)
+        // Multiplayer only: both players must finish capturing/shuffling before a
+        // synced 3-2-1 countdown starts, so both timers begin at the exact same moment.
+        let matchCountdownActive = false;
+        let matchCountdownStart = null;
+        let matchStarted = false;
 
         function resizeCanvas() {
             canvasElement.width = window.innerWidth;
@@ -300,6 +307,9 @@
                     players.push(new Player(2, { x: halfW, y: 0, w: halfW, h: canvasElement.height }, COLOR_P2));
                 }
                 globalWinner = null;
+                matchCountdownActive = false;
+                matchCountdownStart = null;
+                matchStarted = false;
                 isPlaying = true;
             }
         });
@@ -315,6 +325,9 @@
             isPlaying = false;
             players = [];
             globalWinner = null;
+            matchCountdownActive = false;
+            matchCountdownStart = null;
+            matchStarted = false;
             updateMenuUI();
         }
 
@@ -395,6 +408,8 @@
                     this.handleShuffleAnimation(handsData);
                 } else if (this.state === 'WAITING') {
                     this.drawWaiting();
+                } else if (this.state === 'READY_COUNTDOWN') {
+                    this.handleReadyCountdown();
                 } else if (this.state === 'PLAYING') {
                     this.handleGameplay(handsData);
                 } else if (this.state === 'LOSE') {
@@ -708,6 +723,40 @@
                 }
             }
 
+            handleReadyCountdown() {
+                // Board stays static/visible while waiting for the synced start
+                this.pieces.forEach((p) => {
+                    ctx.drawImage(p.image, p.drawX, p.drawY);
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(p.drawX, p.drawY, p.image.width, p.image.height);
+                });
+
+                let cx = this.bounds.x + this.bounds.w / 2;
+                let cy = this.bounds.y + this.bounds.h / 2;
+                let elapsed = (Date.now() - matchCountdownStart) / 1000;
+                let remaining = MATCH_COUNTDOWN_SECONDS - Math.floor(elapsed);
+
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.font = "bold 26px 'Orbitron', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("BOTH READY - GET SET!", cx, 60);
+                ctx.restore();
+
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 25;
+                ctx.font = "bold 130px 'Orbitron', sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(remaining > 0 ? remaining.toString() : "GO!", cx, cy);
+                ctx.restore();
+            }
+
             handleGameplay(handsData) {
                 // Grid Background
                 ctx.save();
@@ -996,17 +1045,26 @@
                     });
                 }
 
-                if (players[0]) players[0].update(p1Hands);
-                if (players[1]) players[1].update(p2Hands);
-
-                if (selectedMode === 'multi') {
-                    let bothReady = players.every(p => p.state !== 'CALIBRATING');
-                    if (bothReady) {
-                        players.forEach(p => {
-                            if (p.state === 'WAITING') p.startPlaying();
-                        });
+                if (selectedMode === 'multi' && players.length === 2) {
+                    let bothWaiting = players.every(p => p.state === 'WAITING');
+                    if (bothWaiting && !matchCountdownActive && !matchStarted) {
+                        matchCountdownActive = true;
+                        matchCountdownStart = Date.now();
+                        players.forEach(p => { p.state = 'READY_COUNTDOWN'; });
+                    }
+                    if (matchCountdownActive) {
+                        let elapsed = (Date.now() - matchCountdownStart) / 1000;
+                        // A little extra time lets the "GO!" flash render before both start
+                        if (elapsed >= MATCH_COUNTDOWN_SECONDS + 0.5) {
+                            matchCountdownActive = false;
+                            matchStarted = true;
+                            players.forEach(p => p.startPlaying());
+                        }
                     }
                 }
+
+                if (players[0]) players[0].update(p1Hands);
+                if (players[1]) players[1].update(p2Hands);
             }
 
             // Draw Skeleton in all modes as long as camera is active
