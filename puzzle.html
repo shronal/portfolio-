@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puzzle</title>
-    <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
+    <title>Your Face Puzzle</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts (Tekno / Cyberpunk Vibe) -->
@@ -151,9 +150,19 @@
     <video id="webcam" autoplay playsinline class="hidden"></video>
     <canvas id="game-canvas"></canvas>
 
+    <!-- Back Button (shown during gameplay) -->
+    <button id="btn-back" class="hidden font-tech fixed top-5 left-5 z-40 bg-black/60 border-2 border-white/40 text-white font-bold px-5 py-2 rounded-full hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm text-sm tracking-widest">
+        ← BACK
+    </button>
+
     <script>
         // --- KONFIGURASI GAME ---
-        const PINCH_THRESHOLD = 30; 
+        // Pinch is measured as a ratio of the hand's own size (wrist-to-knuckle distance)
+        // instead of a fixed pixel value, so grip detection stays accurate whether the
+        // hand is close to or far from the camera.
+        const PINCH_CLOSE_RATIO = 0.35; // fingers must get this close (relative to hand size) to START a pinch/grip
+        const PINCH_OPEN_RATIO = 0.55;  // fingers must move this far apart to RELEASE a pinch/grip (hysteresis stops slipping)
+        const COUNTDOWN_SECONDS = 3;    // 3...2...1 pose countdown before the face photo is captured
         const HAND_CONNECTIONS = [
             [0, 1], [1, 2], [2, 3], [3, 4], 
             [0, 5], [5, 6], [6, 7], [7, 8], 
@@ -186,6 +195,7 @@
         const winImage = document.getElementById('win-image');
         const winTime = document.getElementById('win-time');
         const btnPlayAgain = document.getElementById('btn-play-again');
+        const btnBack = document.getElementById('btn-back');
 
         // --- STATE GLOBAL ---
         let selectedMode = null; // 'single' atau 'multi'
@@ -280,6 +290,7 @@
         btnStartGame.addEventListener('click', () => {
             if (isCameraOn && selectedMode) {
                 uiLayer.classList.add('hidden');
+                btnBack.classList.remove('hidden');
                 players = [];
                 if (selectedMode === 'single') {
                     players.push(new Player(1, { x: 0, y: 0, w: canvasElement.width, h: canvasElement.height }, COLOR_P1));
@@ -293,8 +304,11 @@
             }
         });
 
-        btnPlayAgain.addEventListener('click', () => {
+        function returnToMenu() {
+            // Stop any running timers so they don't keep ticking in the background
+            players.forEach(p => { if (p.intervalId) clearInterval(p.intervalId); });
             winScreen.classList.add('hidden');
+            btnBack.classList.add('hidden');
             uiLayer.classList.remove('hidden');
             // Reset state
             selectedMode = null;
@@ -302,12 +316,16 @@
             players = [];
             globalWinner = null;
             updateMenuUI();
-        });
+        }
+
+        btnPlayAgain.addEventListener('click', returnToMenu);
+        btnBack.addEventListener('click', returnToMenu);
 
 
         // --- FUNGSI WIN OVERLAY GLOBAL ---
         function triggerWinScreen(winnerPlayer) {
             isPlaying = false; // Hentikan interaksi canvas puzzle
+            btnBack.classList.add('hidden');
 
             // Ekstrak puzzle yang sudah jadi ke canvas sementara
             let tempCanvas = document.createElement('canvas');
@@ -360,11 +378,21 @@
                 this.intervalId = null;
                 this.isPinching = false;
                 this.smoothedCursor = null;
+                this.smoothedPinchDist = null;
+                this.countdownBox = null;
+                this.countdownStart = null;
+                this.shuffleStartTime = null;
+                this.shuffleDuration = 900; // ms
+                this.afterShuffleState = null;
             }
 
             update(handsData) {
                 if (this.state === 'CALIBRATING') {
                     this.handleCalibration(handsData);
+                } else if (this.state === 'COUNTDOWN') {
+                    this.handleCountdown(handsData);
+                } else if (this.state === 'SHUFFLING') {
+                    this.handleShuffleAnimation(handsData);
                 } else if (this.state === 'WAITING') {
                     this.drawWaiting();
                 } else if (this.state === 'PLAYING') {
@@ -372,6 +400,24 @@
                 } else if (this.state === 'LOSE') {
                     this.drawWaiting(true); // Gambar beku
                 }
+            }
+
+            // Wrist (0) to middle-finger knuckle (9) distance approximates hand size in
+            // pixels for the current frame - used to normalize pinch detection.
+            getHandScale(hand) {
+                return this.getDistance(hand[0], hand[9]);
+            }
+
+            // Low-pass filtered thumb-index distance so a single noisy frame from the
+            // hand tracker can't make the grip flicker open.
+            getPinchDistance(hand) {
+                let raw = this.getDistance(hand[4], hand[8]);
+                if (this.smoothedPinchDist === null) {
+                    this.smoothedPinchDist = raw;
+                } else {
+                    this.smoothedPinchDist += (raw - this.smoothedPinchDist) * 0.35;
+                }
+                return this.smoothedPinchDist;
             }
 
             handleCalibration(handsData) {
@@ -420,8 +466,10 @@
                         ctx.strokeRect(this.box.x, this.box.y, this.box.w, this.box.h);
                         ctx.restore();
 
-                        let pinchLeft = this.getDistance(leftHand[4], leftHand[8]) < PINCH_THRESHOLD;
-                        let pinchRight = this.getDistance(rightHand[4], rightHand[8]) < PINCH_THRESHOLD;
+                        let leftScale = this.getHandScale(leftHand);
+                        let rightScale = this.getHandScale(rightHand);
+                        let pinchLeft = this.getDistance(leftHand[4], leftHand[8]) < leftScale * PINCH_CLOSE_RATIO;
+                        let pinchRight = this.getDistance(rightHand[4], rightHand[8]) < rightScale * PINCH_CLOSE_RATIO;
 
                         // Add glowing line effect when about to snap the image in calibration
                         if (pinchLeft) {
@@ -451,10 +499,58 @@
                         }
 
                         if (pinchLeft && pinchRight) {
-                            this.capturePuzzle();
+                            this.startCountdown();
                         }
                     }
                 }
+            }
+
+            startCountdown() {
+                this.state = 'COUNTDOWN';
+                this.countdownBox = { x: this.box.x, y: this.box.y, w: this.box.w, h: this.box.h };
+                this.countdownStart = Date.now();
+            }
+
+            handleCountdown(handsData) {
+                // Keep the frame visible so the player knows exactly what will be captured
+                ctx.save();
+                ctx.strokeStyle = "white";
+                ctx.shadowColor = "white";
+                ctx.shadowBlur = 15;
+                ctx.lineWidth = 4;
+                ctx.strokeRect(this.countdownBox.x, this.countdownBox.y, this.countdownBox.w, this.countdownBox.h);
+                ctx.restore();
+
+                let cx = this.countdownBox.x + this.countdownBox.w / 2;
+                let cy = this.countdownBox.y + this.countdownBox.h / 2;
+
+                let elapsed = (Date.now() - this.countdownStart) / 1000;
+                let remaining = COUNTDOWN_SECONDS - Math.floor(elapsed);
+
+                if (remaining <= 0) {
+                    this.box = this.countdownBox;
+                    this.capturePuzzle();
+                    return;
+                }
+
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.font = "bold 26px 'Orbitron', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("HOLD YOUR POSE!", cx, this.countdownBox.y - 20 > 40 ? this.countdownBox.y - 20 : 40);
+                ctx.restore();
+
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 25;
+                ctx.font = "bold 130px 'Orbitron', sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(remaining.toString(), cx, cy);
+                ctx.restore();
             }
 
             capturePuzzle() {
@@ -488,13 +584,8 @@
                     this.pieces.push({ id: i, currentSlot: i, image: pieceCanvas, drawX: pX, drawY: pY });
                 }
 
+                this.afterShuffleState = (selectedMode === 'multi') ? 'WAITING' : 'PLAYING';
                 this.shufflePuzzle();
-                
-                if (selectedMode === 'multi') {
-                    this.state = 'WAITING';
-                } else {
-                    this.startPlaying();
-                }
             }
 
             shufflePuzzle() {
@@ -508,9 +599,79 @@
                     [slotIndices[i], slotIndices[j]] = [slotIndices[j], slotIndices[i]];
                 }
                 this.pieces.forEach((p, index) => {
+                    // Remember where the piece is drawn right now (its original,
+                    // unshuffled spot) so we can animate it flying to its new slot.
+                    p.startX = p.drawX;
+                    p.startY = p.drawY;
                     p.currentSlot = slotIndices[index];
-                    this.snapToSlot(p);
+                    let target = this.slots[p.currentSlot];
+                    p.targetX = target.x;
+                    p.targetY = target.y;
                 });
+
+                this.state = 'SHUFFLING';
+                this.shuffleStartTime = Date.now();
+            }
+
+            handleShuffleAnimation(handsData) {
+                // Grid Background
+                ctx.save();
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+                ctx.lineWidth = 1;
+                this.slots.forEach(slot => ctx.strokeRect(slot.x, slot.y, slot.w, slot.h));
+                ctx.restore();
+
+                let elapsed = Date.now() - this.shuffleStartTime;
+                let t = Math.min(elapsed / this.shuffleDuration, 1);
+                // Ease-in-out so the shuffle starts and ends smoothly rather than linearly
+                let eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                let oneMinusT = 1 - eased;
+
+                let boxCx = this.box.x + this.box.w / 2;
+                let boxCy = this.box.y + this.box.h / 2;
+
+                this.pieces.forEach(p => {
+                    // Bow the travel path toward the center of the frame so pieces
+                    // visibly swirl past each other instead of sliding in straight lines
+                    let straightMidX = (p.startX + p.targetX) / 2;
+                    let straightMidY = (p.startY + p.targetY) / 2;
+                    let curveX = straightMidX + (boxCx - straightMidX) * 0.35;
+                    let curveY = straightMidY + (boxCy - straightMidY) * 0.35;
+
+                    p.drawX = oneMinusT * oneMinusT * p.startX + 2 * oneMinusT * eased * curveX + eased * eased * p.targetX;
+                    p.drawY = oneMinusT * oneMinusT * p.startY + 2 * oneMinusT * eased * curveY + eased * eased * p.targetY;
+
+                    ctx.save();
+                    ctx.globalAlpha = 0.8 + 0.2 * eased;
+                    ctx.drawImage(p.image, p.drawX, p.drawY);
+                    ctx.strokeStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 8;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(p.drawX, p.drawY, p.image.width, p.image.height);
+                    ctx.restore();
+                });
+
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.font = "bold 26px 'Orbitron', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("SHUFFLING...", this.bounds.x + this.bounds.w / 2, 60);
+                ctx.restore();
+
+                if (t >= 1) {
+                    this.pieces.forEach(p => {
+                        p.drawX = p.targetX;
+                        p.drawY = p.targetY;
+                    });
+                    if (this.afterShuffleState === 'WAITING') {
+                        this.state = 'WAITING';
+                    } else {
+                        this.startPlaying();
+                    }
+                }
             }
 
             startPlaying() {
@@ -571,7 +732,18 @@
                         this.smoothedCursor.y += (rawY - this.smoothedCursor.y) * lerpFactor;
                     }
                     cursor = this.smoothedCursor;
-                    pinching = this.getDistance(h[4], h[8]) < PINCH_THRESHOLD;
+
+                    // Scale-normalized + hysteresis pinch detection: the "grab" distance
+                    // adapts to how big the hand looks on screen, and once a piece is
+                    // gripped the fingers must clearly separate (a bigger gap) before it
+                    // is released - this is what stops the piece from slipping out of
+                    // your grip on small hand-tracking jitters.
+                    let pinchDist = this.getPinchDistance(h);
+                    let handScale = this.getHandScale(h);
+                    let closeThresh = handScale * PINCH_CLOSE_RATIO;
+                    let openThresh = handScale * PINCH_OPEN_RATIO;
+                    pinching = this.isPinching ? (pinchDist < openThresh) : (pinchDist < closeThresh);
+
                     ctx.save();
                     
                     // Pulsing animation effect based on time
