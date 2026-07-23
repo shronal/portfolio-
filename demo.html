@@ -141,7 +141,7 @@
             <!-- Action Buttons inside Card -->
             <div class="flex flex-col sm:flex-row gap-3 w-full max-w-xs">
                 <button id="btn-retake-win" class="font-tech bg-cyan-400 text-black font-extrabold text-sm md:text-base px-6 py-3 rounded-full btn-glow flex-1 hover:bg-cyan-300 transition-all">
-                    📷 RETAKE
+                    🔄 RESTART
                 </button>
                 <button id="btn-play-again" class="font-tech bg-white text-black font-extrabold text-sm md:text-base px-6 py-3 rounded-full btn-glow flex-1 hover:bg-gray-200 transition-all">
                     MENU
@@ -159,11 +159,11 @@
 
     <!-- Top Action Buttons (shown during gameplay) -->
     <div id="top-bar-controls" class="hidden fixed top-5 left-5 z-40 flex items-center gap-3">
-        <button id="btn-back" class="font-tech bg-black/60 border-2 border-white/40 text-white font-bold px-5 py-2 rounded-full hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm text-sm tracking-widest">
-            ← BACK
+        <button id="btn-back" class="font-tech bg-black/60 border-2 border-white/40 text-white font-bold px-4 py-2 rounded-full hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm text-base tracking-widest">
+            ←
         </button>
         <button id="btn-retake" class="font-tech bg-black/60 border-2 border-cyan-400/50 text-cyan-400 font-bold px-5 py-2 rounded-full hover:bg-cyan-400/20 hover:border-cyan-400 transition-all backdrop-blur-sm text-sm tracking-widest">
-            📷 RETAKE 
+            RETAKE PHOTO
         </button>
     </div>
 
@@ -876,7 +876,6 @@
 
                 const previewSize = 105;
                 const headerH = 22;
-                const retakeBtnH = 20;
                 const padding = 5;
                 const topMargin = 15;
 
@@ -885,7 +884,7 @@
 
                 if (this.showReference) {
                     boxW = previewSize + padding * 2;
-                    boxH = previewSize + headerH + retakeBtnH + padding * 3;
+                    boxH = previewSize + headerH + padding * 2;
                     boxX = centerX - boxW / 2;
                     boxY = topMargin;
                 } else {
@@ -944,30 +943,7 @@
                     // Border around image
                     ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
                     ctx.strokeRect(imgX, imgY, previewSize, previewSize);
-
-                    // Retake photo button chip at bottom
-                    const btnRetakeY = imgY + previewSize + padding;
-                    this.retakeBtnRect = { x: boxX + padding, y: btnRetakeY, w: previewSize, h: retakeBtnH };
-
-                    ctx.fillStyle = "rgba(0, 255, 255, 0.15)";
-                    ctx.strokeStyle = this.color;
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    if (ctx.roundRect) {
-                        ctx.roundRect(this.retakeBtnRect.x, this.retakeBtnRect.y, this.retakeBtnRect.w, this.retakeBtnRect.h, 4);
-                    } else {
-                        ctx.rect(this.retakeBtnRect.x, this.retakeBtnRect.y, this.retakeBtnRect.w, this.retakeBtnRect.h);
-                    }
-                    ctx.fill();
-                    ctx.stroke();
-
-                    ctx.fillStyle = "#00FFFF";
-                    ctx.font = "bold 9px 'Orbitron', sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText("📷 RETAKE PHOTO", this.retakeBtnRect.x + this.retakeBtnRect.w / 2, btnRetakeY + retakeBtnH / 2);
                 } else {
-                    this.retakeBtnRect = null;
                     // Collapsed Bar
                     ctx.fillStyle = "rgba(10, 10, 15, 0.88)";
                     ctx.strokeStyle = this.color;
@@ -993,7 +969,7 @@
 
                 ctx.restore();
 
-                // Gesture interaction check for retake button & toggle button
+                // Gesture interaction check for toggle button
                 if (handsData && handsData.length > 0) {
                     handsData.forEach(h => {
                         let fingerTip = h[8];
@@ -1001,25 +977,7 @@
                         let pinchDist = this.getDistance(h[4], h[8]);
                         let isPinching = pinchDist < handScale * PINCH_CLOSE_RATIO;
 
-                        // Check Retake Button Chip Gesture
-                        if (this.retakeBtnRect &&
-                            fingerTip.x >= this.retakeBtnRect.x && fingerTip.x <= this.retakeBtnRect.x + this.retakeBtnRect.w &&
-                            fingerTip.y >= this.retakeBtnRect.y && fingerTip.y <= this.retakeBtnRect.y + this.retakeBtnRect.h) {
-                            
-                            ctx.save();
-                            ctx.strokeStyle = "#00FFFF";
-                            ctx.lineWidth = 2;
-                            ctx.shadowColor = "#00FFFF";
-                            ctx.shadowBlur = 12;
-                            ctx.strokeRect(this.retakeBtnRect.x - 2, this.retakeBtnRect.y - 2, this.retakeBtnRect.w + 4, this.retakeBtnRect.h + 4);
-                            ctx.restore();
-
-                            const now = Date.now();
-                            if (isPinching && (now - this.lastRetakeTime > 500)) {
-                                this.lastRetakeTime = now;
-                                this.retakePhoto();
-                            }
-                        } else if (fingerTip.x >= boxX && fingerTip.x <= boxX + boxW &&
+                        if (fingerTip.x >= boxX && fingerTip.x <= boxX + boxW &&
                             fingerTip.y >= boxY && fingerTip.y <= boxY + boxH) {
                             
                             // Highlight box on hand hover
@@ -1455,15 +1413,50 @@
             if (isPlaying && players.length > 0) {
                 
                 if (selectedMode === 'multi') {
+                    const midX = canvasElement.width / 2;
+
                     ctx.save();
-                    ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+                    // Glowing dashed line
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
                     ctx.shadowColor = "white";
-                    ctx.shadowBlur = 10;
-                    ctx.lineWidth = 4;
+                    ctx.shadowBlur = 14;
+                    ctx.lineWidth = 3;
+                    ctx.setLineDash([12, 8]);
                     ctx.beginPath();
-                    ctx.moveTo(canvasElement.width / 2, 0);
-                    ctx.lineTo(canvasElement.width / 2, canvasElement.height);
+                    ctx.moveTo(midX, 0);
+                    ctx.lineTo(midX, canvasElement.height);
                     ctx.stroke();
+                    ctx.setLineDash([]);
+                    ctx.restore();
+
+                    // "DO NOT CROSS THIS LINE" warning badge
+                    ctx.save();
+                    const badgeW = 230;
+                    const badgeH = 30;
+                    const badgeY = canvasElement.height - 50;
+
+                    ctx.fillStyle = "rgba(10, 10, 15, 0.92)";
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.7)";
+                    ctx.shadowColor = "white";
+                    ctx.shadowBlur = 12;
+                    ctx.lineWidth = 2;
+
+                    ctx.beginPath();
+                    if (ctx.roundRect) {
+                        ctx.roundRect(midX - badgeW / 2, badgeY, badgeW, badgeH, 15);
+                    } else {
+                        ctx.rect(midX - badgeW / 2, badgeY, badgeW, badgeH);
+                    }
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.shadowColor = "white";
+                    ctx.shadowBlur = 8;
+                    ctx.font = "bold 11px 'Orbitron', sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText("DO NOT CROSS THIS LINE", midX, badgeY + badgeH / 2 + 1);
                     ctx.restore();
                 }
 
@@ -1503,154 +1496,6 @@
 
                 if (players[0]) players[0].update(p1Hands);
                 if (players[1]) players[1].update(p2Hands);
-
-                // --- BACK BUTTON GESTURE TOUCH CONTROL ---
-                if (btnBack && topBarControls && !topBarControls.classList.contains('hidden')) {
-                    const btnRect = btnBack.getBoundingClientRect();
-                    const hitPadding = 25;
-                    const targetBox = {
-                        left: btnRect.left - hitPadding,
-                        top: btnRect.top - hitPadding,
-                        right: btnRect.right + hitPadding,
-                        bottom: btnRect.bottom + hitPadding
-                    };
-
-                    let touchingHand = null;
-                    let touchPos = null;
-                    let isPinchingBack = false;
-
-                    mappedHands.forEach(hand => {
-                        let indexTip = hand[8];
-                        let thumbTip = hand[4];
-                        let cursorX = (indexTip.x + thumbTip.x) / 2;
-                        let cursorY = (indexTip.y + thumbTip.y) / 2;
-
-                        if ((indexTip.x >= targetBox.left && indexTip.x <= targetBox.right && indexTip.y >= targetBox.top && indexTip.y <= targetBox.bottom) ||
-                            (cursorX >= targetBox.left && cursorX <= targetBox.right && cursorY >= targetBox.top && cursorY <= targetBox.bottom)) {
-                            touchingHand = hand;
-                            touchPos = { x: indexTip.x, y: indexTip.y };
-
-                            let pinchDist = Math.sqrt(Math.pow(indexTip.x - thumbTip.x, 2) + Math.pow(indexTip.y - thumbTip.y, 2));
-                            let wristDist = Math.sqrt(Math.pow(hand[0].x - hand[9].x, 2) + Math.pow(hand[0].y - hand[9].y, 2));
-                            if (pinchDist < wristDist * PINCH_CLOSE_RATIO) {
-                                isPinchingBack = true;
-                            }
-                        }
-                    });
-
-                    if (touchingHand && touchPos) {
-                        btnBackDwellTimer += 16;
-
-                        btnBack.classList.add('border-cyan-400', 'bg-cyan-950/80', 'scale-110');
-                        btnBack.style.boxShadow = "0 0 25px rgba(0, 255, 255, 0.9)";
-
-                        let progress = Math.min(btnBackDwellTimer / 750, 1.0);
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.arc(touchPos.x, touchPos.y, 24, 0, Math.PI * 2);
-                        ctx.fillStyle = "rgba(0, 255, 255, 0.2)";
-                        ctx.fill();
-
-                        ctx.beginPath();
-                        ctx.arc(touchPos.x, touchPos.y, 24, -Math.PI / 2, -Math.PI / 2 + progress * Math.PI * 2);
-                        ctx.strokeStyle = "#00FFFF";
-                        ctx.lineWidth = 5;
-                        ctx.shadowColor = "#00FFFF";
-                        ctx.shadowBlur = 15;
-                        ctx.stroke();
-
-                        ctx.fillStyle = "#FFFFFF";
-                        ctx.shadowColor = "black";
-                        ctx.shadowBlur = 6;
-                        ctx.font = "bold 13px 'Orbitron', sans-serif";
-                        ctx.textAlign = "center";
-                        ctx.fillText("HOLD BACK", touchPos.x, touchPos.y - 32);
-                        ctx.restore();
-
-                        if (progress >= 1.0 || isPinchingBack) {
-                            btnBackDwellTimer = 0;
-                            returnToMenu();
-                        }
-                    } else {
-                        btnBackDwellTimer = 0;
-                        btnBack.classList.remove('border-cyan-400', 'bg-cyan-950/80', 'scale-110');
-                        btnBack.style.boxShadow = "";
-                    }
-                }
-
-                // --- RETAKE BUTTON GESTURE TOUCH CONTROL ---
-                if (btnRetake && topBarControls && !topBarControls.classList.contains('hidden')) {
-                    const btnRect = btnRetake.getBoundingClientRect();
-                    const hitPadding = 25;
-                    const targetBox = {
-                        left: btnRect.left - hitPadding,
-                        top: btnRect.top - hitPadding,
-                        right: btnRect.right + hitPadding,
-                        bottom: btnRect.bottom + hitPadding
-                    };
-
-                    let touchingHand = null;
-                    let touchPos = null;
-                    let isPinchingRetake = false;
-
-                    mappedHands.forEach(hand => {
-                        let indexTip = hand[8];
-                        let thumbTip = hand[4];
-                        let cursorX = (indexTip.x + thumbTip.x) / 2;
-                        let cursorY = (indexTip.y + thumbTip.y) / 2;
-
-                        if ((indexTip.x >= targetBox.left && indexTip.x <= targetBox.right && indexTip.y >= targetBox.top && indexTip.y <= targetBox.bottom) ||
-                            (cursorX >= targetBox.left && cursorX <= targetBox.right && cursorY >= targetBox.top && cursorY <= targetBox.bottom)) {
-                            touchingHand = hand;
-                            touchPos = { x: indexTip.x, y: indexTip.y };
-
-                            let pinchDist = Math.sqrt(Math.pow(indexTip.x - thumbTip.x, 2) + Math.pow(indexTip.y - thumbTip.y, 2));
-                            let wristDist = Math.sqrt(Math.pow(hand[0].x - hand[9].x, 2) + Math.pow(hand[0].y - hand[9].y, 2));
-                            if (pinchDist < wristDist * PINCH_CLOSE_RATIO) {
-                                isPinchingRetake = true;
-                            }
-                        }
-                    });
-
-                    if (touchingHand && touchPos) {
-                        btnRetakeDwellTimer += 16;
-
-                        btnRetake.classList.add('border-cyan-400', 'bg-cyan-950/80', 'scale-110');
-                        btnRetake.style.boxShadow = "0 0 25px rgba(0, 255, 255, 0.9)";
-
-                        let progress = Math.min(btnRetakeDwellTimer / 750, 1.0);
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.arc(touchPos.x, touchPos.y, 24, 0, Math.PI * 2);
-                        ctx.fillStyle = "rgba(0, 255, 255, 0.2)";
-                        ctx.fill();
-
-                        ctx.beginPath();
-                        ctx.arc(touchPos.x, touchPos.y, 24, -Math.PI / 2, -Math.PI / 2 + progress * Math.PI * 2);
-                        ctx.strokeStyle = "#00FFFF";
-                        ctx.lineWidth = 5;
-                        ctx.shadowColor = "#00FFFF";
-                        ctx.shadowBlur = 15;
-                        ctx.stroke();
-
-                        ctx.fillStyle = "#FFFFFF";
-                        ctx.shadowColor = "black";
-                        ctx.shadowBlur = 6;
-                        ctx.font = "bold 13px 'Orbitron', sans-serif";
-                        ctx.textAlign = "center";
-                        ctx.fillText("HOLD RETAKE", touchPos.x, touchPos.y - 32);
-                        ctx.restore();
-
-                        if (progress >= 1.0 || isPinchingRetake) {
-                            btnRetakeDwellTimer = 0;
-                            triggerGlobalRetake();
-                        }
-                    } else {
-                        btnRetakeDwellTimer = 0;
-                        btnRetake.classList.remove('border-cyan-400', 'bg-cyan-950/80', 'scale-110');
-                        btnRetake.style.boxShadow = "";
-                    }
-                }
             }
 
         canvasElement.addEventListener('click', (e) => {
@@ -1659,13 +1504,6 @@
             const clickY = e.clientY - rect.top;
 
             players.forEach(p => {
-                if (p.retakeBtnRect) {
-                    let r = p.retakeBtnRect;
-                    if (clickX >= r.x && clickX <= r.x + r.w && clickY >= r.y && clickY <= r.y + r.h) {
-                        p.retakePhoto();
-                        return;
-                    }
-                }
                 if (p.toggleRect) {
                     let tr = p.toggleRect;
                     if (clickX >= tr.x && clickX <= tr.x + tr.w && clickY >= tr.y && clickY <= tr.y + tr.h) {
