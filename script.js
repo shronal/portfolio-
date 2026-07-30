@@ -291,3 +291,25 @@
         if (e.key === 'ArrowLeft') galleryNav(-1);
       }
     });
+
+    // ── PREVENT RIGHT-CLICK & DEV TOOLS SHORTCUTS ──
+    document.addEventListener('contextmenu', e => e.preventDefault());
+
+    document.addEventListener('keydown', e => {
+      // Disable F12
+      if (e.key === 'F12') {
+        e.preventDefault();
+      }
+      // Disable Ctrl+U (View Source)
+      if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
+        e.preventDefault();
+      }
+      // Disable Ctrl+Shift+I / J / C (DevTools & Console & Inspect)
+      if (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) {
+        e.preventDefault();
+      }
+      // Disable Ctrl+S (Save Page)
+      if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+        e.preventDefault();
+      }
+    });

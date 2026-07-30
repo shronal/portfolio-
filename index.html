@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,14 @@
   <link rel="icon" type="image/x-icon" sizes="180x180" href="images/wbi.png">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
   <style>
     /* ── Certificate modal image (added) ── */
-    .cert-modal-box { max-width: 560px; }
+    .cert-modal-box {
+      max-width: 560px;
+    }
 
     .cert-modal-img-wrap {
       display: none;
@@ -25,13 +30,19 @@
       border-bottom: none;
       box-sizing: border-box;
     }
-    .cert-modal-img-wrap.visible { display: block; }
+
+    .cert-modal-img-wrap.visible {
+      display: block;
+    }
+
     .cert-modal-img-wrap::after {
       content: '';
-      position: absolute; inset: 0;
-      box-shadow: inset 0 -40px 40px -30px rgba(1,30,27,0.55);
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 -40px 40px -30px rgba(1, 30, 27, 0.55);
       pointer-events: none;
     }
+
     .cert-modal-img {
       display: block;
       width: 100%;
@@ -41,7 +52,11 @@
       cursor: zoom-in;
       transition: transform 0.4s ease;
     }
-    .cert-modal-img:hover { transform: scale(1.02); }
+
+    .cert-modal-img:hover {
+      transform: scale(1.02);
+    }
+
     .cert-modal-pdf {
       display: none;
       width: 100%;
@@ -49,12 +64,17 @@
       border: none;
       background: #fdfbf3;
     }
+
     @media (max-width: 600px) {
-      .cert-modal-pdf { height: 240px; }
+      .cert-modal-pdf {
+        height: 240px;
+      }
     }
 
     /* When an image is showing, shrink the icon so it doesn't dominate */
-    .cert-modal-img-wrap.visible ~ .cert-modal-icon { display: none; }
+    .cert-modal-img-wrap.visible~.cert-modal-icon {
+      display: none;
+    }
 
     /* Fullscreen lightbox for the certificate image */
     .cert-lightbox {
@@ -71,50 +91,88 @@
       opacity: 0;
       transition: opacity 0.25s ease;
     }
-    .cert-lightbox.open { display: flex; opacity: 1; }
+
+    .cert-lightbox.open {
+      display: flex;
+      opacity: 1;
+    }
+
     .cert-lightbox img {
       max-width: 92vw;
       max-height: 88vh;
       object-fit: contain;
       border-radius: 10px;
-      box-shadow: 0 20px 70px rgba(0,0,0,0.55);
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.55);
     }
+
     .cert-lightbox-close {
       position: absolute;
       top: 26px;
       right: 34px;
       color: #ffefb3;
       font-size: 26px;
-      background: rgba(255,239,179,0.1);
-      border: 1.5px solid rgba(255,239,179,0.25);
-      width: 42px; height: 42px;
+      background: rgba(255, 239, 179, 0.1);
+      border: 1.5px solid rgba(255, 239, 179, 0.25);
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: background 0.2s ease;
     }
-    .cert-lightbox-close:hover { background: rgba(255,239,179,0.22); }
+
+    .cert-lightbox-close:hover {
+      background: rgba(255, 239, 179, 0.22);
+    }
 
     @media (max-width: 600px) {
-      .cert-modal-box { padding: 1.6rem; }
-      .cert-modal-img-wrap { width: calc(100% + 3.2rem); margin: -1.6rem -1.6rem 1.4rem; max-height: 240px; }
-      .cert-modal-img { max-height: 240px; }
+      .cert-modal-box {
+        padding: 1.6rem;
+      }
+
+      .cert-modal-img-wrap {
+        width: calc(100% + 3.2rem);
+        margin: -1.6rem -1.6rem 1.4rem;
+        max-height: 240px;
+      }
+
+      .cert-modal-img {
+        max-height: 240px;
+      }
     }
 
     /* ── PROJECT MEDIA (video/gallery) — reuses cert-modal-img-wrap look ── */
-    .proj-modal-box { max-width: 620px; }
+    .proj-modal-box {
+      max-width: 620px;
+    }
 
-    .project-header { position: relative; cursor: pointer; }
+    .project-header {
+      position: relative;
+      cursor: pointer;
+    }
+
     .proj-view-hint {
-      position: absolute; inset: 0;
-      background: rgba(1,62,55,0.82);
-      display: flex; align-items: center; justify-content: center;
-      color: #ffefb3; font-size: 0.82rem; font-weight: 600;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      opacity: 0; transition: opacity 0.28s;
+      position: absolute;
+      inset: 0;
+      background: rgba(1, 62, 55, 0.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffefb3;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.28s;
       gap: 0.5rem;
     }
-    .project-card:hover .proj-view-hint { opacity: 1; }
+
+    .project-card:hover .proj-view-hint {
+      opacity: 1;
+    }
 
     #proj-media-wrap #proj-video {
       width: 100%;
@@ -122,7 +180,10 @@
       display: none;
       background: #000;
     }
-    #proj-media-wrap #proj-image { cursor: zoom-in; }
+
+    #proj-media-wrap #proj-image {
+      cursor: zoom-in;
+    }
 
     .proj-gallery-controls {
       position: absolute;
@@ -130,29 +191,44 @@
       display: none;
       pointer-events: none;
     }
+
     .proj-gallery-btn {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 40px; height: 40px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: rgba(1,15,13,0.55);
-      border: 1.5px solid rgba(255,239,179,0.35);
+      background: rgba(1, 15, 13, 0.55);
+      border: 1.5px solid rgba(255, 239, 179, 0.35);
       color: #ffefb3;
       font-size: 0.95rem;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       pointer-events: all;
       transition: background 0.2s ease;
     }
-    .proj-gallery-btn:hover { background: rgba(1,62,55,0.85); }
-    .proj-gallery-btn.prev { left: 14px; }
-    .proj-gallery-btn.next { right: 14px; }
+
+    .proj-gallery-btn:hover {
+      background: rgba(1, 62, 55, 0.85);
+    }
+
+    .proj-gallery-btn.prev {
+      left: 14px;
+    }
+
+    .proj-gallery-btn.next {
+      right: 14px;
+    }
+
     .proj-gallery-counter {
       position: absolute;
-      bottom: 12px; right: 16px;
-      background: rgba(1,15,13,0.6);
-      border: 1px solid rgba(255,239,179,0.25);
+      bottom: 12px;
+      right: 16px;
+      background: rgba(1, 15, 13, 0.6);
+      border: 1px solid rgba(255, 239, 179, 0.25);
       color: #ffefb3;
       font-size: 0.72rem;
       font-weight: 600;
@@ -163,7 +239,9 @@
     }
 
     @media (max-width: 600px) {
-      #proj-media-wrap #proj-video { max-height: 240px; }
+      #proj-media-wrap #proj-video {
+        max-height: 240px;
+      }
     }
 
     /* ── SKILLS — marquee + detailed rows with proficiency ── */
@@ -177,24 +255,35 @@
       -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
       mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
     }
+
     .tech-marquee-track {
       display: flex;
       width: max-content;
       gap: 0.85rem;
       animation: marqueeScroll 28s linear infinite;
     }
-    .tech-marquee:hover .tech-marquee-track { animation-play-state: paused; }
-    @keyframes marqueeScroll {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+
+    .tech-marquee:hover .tech-marquee-track {
+      animation-play-state: paused;
     }
+
+    @keyframes marqueeScroll {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
     .tech-marquee-item {
       display: flex;
       align-items: center;
       gap: 0.55rem;
       flex-shrink: 0;
-      background: rgba(1,62,55,0.06);
-      border: 1px solid rgba(1,62,55,0.14);
+      background: rgba(1, 62, 55, 0.06);
+      border: 1px solid rgba(1, 62, 55, 0.14);
       color: var(--deep, #013e37);
       padding: 0.6rem 1.1rem;
       border-radius: 30px;
@@ -202,39 +291,60 @@
       font-weight: 600;
       white-space: nowrap;
     }
-    .tech-marquee-item i { font-size: 1.05rem; }
+
+    .tech-marquee-item i {
+      font-size: 1.05rem;
+    }
+
     html.dark-mode .tech-marquee-item {
-      background: rgba(255,239,179,0.08);
-      border-color: rgba(255,239,179,0.2);
+      background: rgba(255, 239, 179, 0.08);
+      border-color: rgba(255, 239, 179, 0.2);
       color: var(--cream, #ffefb3);
     }
+
     @media (prefers-reduced-motion: reduce) {
-      .tech-marquee-track { animation: none; }
+      .tech-marquee-track {
+        animation: none;
+      }
     }
 
     /* Category cards */
-    .skill-box { border-left: none !important; padding: 1.85rem 1.7rem; }
+    .skill-box {
+      border-left: none !important;
+      padding: 1.85rem 1.7rem;
+    }
+
     .skill-box-head {
       display: flex;
       align-items: center;
       gap: 0.9rem;
       margin-bottom: 1.4rem;
     }
+
     .skill-icon {
-      width: 44px; height: 44px; min-width: 44px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
       border-radius: 12px;
-      background: rgba(1,62,55,0.08);
-      border: 1.5px solid rgba(1,62,55,0.18);
-      display: flex; align-items: center; justify-content: center;
+      background: rgba(1, 62, 55, 0.08);
+      border: 1.5px solid rgba(1, 62, 55, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--deep, #013e37);
       font-size: 1.15rem;
     }
+
     html.dark-mode .skill-icon {
-      background: rgba(255,239,179,0.1);
-      border-color: rgba(255,239,179,0.22);
+      background: rgba(255, 239, 179, 0.1);
+      border-color: rgba(255, 239, 179, 0.22);
       color: var(--cream, #ffefb3);
     }
-    .skill-box .skill-title { margin-bottom: 0; flex: 1; }
+
+    .skill-box .skill-title {
+      margin-bottom: 0;
+      flex: 1;
+    }
 
     /* Simple, clean skill list */
     .skill-simple-list {
@@ -245,6 +355,7 @@
       flex-direction: column;
       gap: 0.7rem;
     }
+
     .skill-simple-list li {
       position: relative;
       padding-left: 1.1rem;
@@ -252,18 +363,26 @@
       font-weight: 500;
       color: var(--text, #0d1f1d);
     }
-    html.dark-mode .skill-simple-list li { color: var(--cream, #ffefb3); }
+
+    html.dark-mode .skill-simple-list li {
+      color: var(--cream, #ffefb3);
+    }
+
     .skill-simple-list li::before {
       content: '';
       position: absolute;
       left: 0;
       top: 0.5em;
-      width: 6px; height: 6px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--deep, #013e37);
       opacity: 0.55;
     }
-    html.dark-mode .skill-simple-list li::before { background: var(--cream, #ffefb3); }
+
+    html.dark-mode .skill-simple-list li::before {
+      background: var(--cream, #ffefb3);
+    }
 
     /* ── ABOUT — icon headings + quick-facts card ── */
     .about-text h3 {
@@ -271,17 +390,22 @@
       align-items: center;
       gap: 0.6rem;
     }
+
     .about-text h3 i {
       font-size: 0.85rem;
       color: var(--rust, #2a7a6e);
       opacity: 0.85;
     }
-    html.dark-mode .about-text h3 i { color: var(--cream, #ffefb3); }
+
+    html.dark-mode .about-text h3 i {
+      color: var(--cream, #ffefb3);
+    }
 
     .about-card-wrap {
       position: relative;
       padding: 30px 20px;
     }
+
     .about-blob {
       position: absolute;
       border-radius: 50%;
@@ -291,101 +415,174 @@
       pointer-events: none;
       animation: aboutBlobFloat 9s ease-in-out infinite;
     }
+
     .about-blob-1 {
-      width: 150px; height: 150px;
-      top: -20px; left: -20px;
+      width: 150px;
+      height: 150px;
+      top: -20px;
+      left: -20px;
       background: var(--deep, #013e37);
       animation-duration: 10s;
     }
+
     .about-blob-2 {
-      width: 110px; height: 110px;
-      bottom: -10px; right: -10px;
+      width: 110px;
+      height: 110px;
+      bottom: -10px;
+      right: -10px;
       background: #ffefb3;
       animation-duration: 8s;
       animation-delay: 1.2s;
     }
+
     @keyframes aboutBlobFloat {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50%      { transform: translate(12px, -16px) scale(1.08); }
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(12px, -16px) scale(1.08);
+      }
     }
 
     .about-card {
       position: relative;
       z-index: 1;
-      background: rgba(255,255,255,0.72);
+      background: rgba(255, 255, 255, 0.72);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.5);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       border-radius: 22px;
       padding: 2.1rem 1.85rem;
       display: flex;
       flex-direction: column;
       gap: 1.35rem;
-      box-shadow: 0 22px 55px rgba(1,62,55,0.16), inset 0 1px 0 rgba(255,255,255,0.6);
+      box-shadow: 0 22px 55px rgba(1, 62, 55, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.6);
       animation: aboutCardFloat 5.5s ease-in-out infinite;
       transition: box-shadow 0.35s ease;
     }
+
     .about-card:hover {
-      box-shadow: 0 28px 65px rgba(1,62,55,0.22), inset 0 1px 0 rgba(255,255,255,0.6);
+      box-shadow: 0 28px 65px rgba(1, 62, 55, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.6);
     }
+
     html.dark-mode .about-card {
-      background: rgba(1,46,42,0.55);
-      border-color: rgba(255,239,179,0.18);
+      background: rgba(1, 46, 42, 0.55);
+      border-color: rgba(255, 239, 179, 0.18);
     }
+
     @keyframes aboutCardFloat {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(-12px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
     }
 
     .about-float-badge {
       position: absolute;
-      width: 46px; height: 46px;
+      width: 46px;
+      height: 46px;
       border-radius: 14px;
       background: var(--deep, #013e37);
       color: #ffefb3;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 1.05rem;
-      box-shadow: 0 12px 26px rgba(1,62,55,0.3);
+      box-shadow: 0 12px 26px rgba(1, 62, 55, 0.3);
       z-index: 2;
       animation: aboutBadgeFloat 4.5s ease-in-out infinite;
     }
-    .about-float-badge.badge-1 { top: 4px;   right: 22px; animation-delay: 0s; }
-    .about-float-badge.badge-2 { bottom: 46px; left: 2px;  animation-delay: 0.7s; }
-    .about-float-badge.badge-3 { top: 42%;   right: -4px; animation-delay: 1.4s; }
-    .about-float-badge.badge-4 { bottom: -6px; left: 30%; animation-delay: 2.1s; }
+
+    .about-float-badge.badge-1 {
+      top: 4px;
+      right: 22px;
+      animation-delay: 0s;
+    }
+
+    .about-float-badge.badge-2 {
+      bottom: 46px;
+      left: 2px;
+      animation-delay: 0.7s;
+    }
+
+    .about-float-badge.badge-3 {
+      top: 42%;
+      right: -4px;
+      animation-delay: 1.4s;
+    }
+
+    .about-float-badge.badge-4 {
+      bottom: -6px;
+      left: 30%;
+      animation-delay: 2.1s;
+    }
+
     @keyframes aboutBadgeFloat {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50%      { transform: translateY(-11px) rotate(6deg); }
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-11px) rotate(6deg);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .about-blob, .about-card, .about-float-badge { animation: none !important; }
+
+      .about-blob,
+      .about-card,
+      .about-float-badge {
+        animation: none !important;
+      }
     }
 
     @media (max-width: 640px) {
-      .about-float-badge { width: 38px; height: 38px; font-size: 0.9rem; }
+      .about-float-badge {
+        width: 38px;
+        height: 38px;
+        font-size: 0.9rem;
+      }
     }
 
     .about-avatar {
-      width: 64px; height: 64px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
       background: var(--deep, #013e37);
-      border: 2px solid rgba(255,239,179,0.4);
+      border: 2px solid rgba(255, 239, 179, 0.4);
       color: var(--cream, #ffefb3);
       font-family: 'Playfair Display', serif;
       font-size: 1.35rem;
       font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin: 0 auto 0.35rem;
     }
+
     .about-fact {
       display: flex;
       align-items: flex-start;
       gap: 0.85rem;
       padding-top: 1.1rem;
-      border-top: 1px solid var(--border, rgba(1,62,55,0.1));
+      border-top: 1px solid var(--border, rgba(1, 62, 55, 0.1));
     }
-    .about-card > .about-fact:first-of-type { border-top: none; padding-top: 0; }
+
+    .about-card>.about-fact:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
     .about-fact i {
       color: var(--deep, #013e37);
       opacity: 0.7;
@@ -394,8 +591,17 @@
       text-align: center;
       margin-top: 0.2rem;
     }
-    html.dark-mode .about-fact i { color: var(--cream, #ffefb3); }
-    .about-fact div { display: flex; flex-direction: column; gap: 0.15rem; }
+
+    html.dark-mode .about-fact i {
+      color: var(--cream, #ffefb3);
+    }
+
+    .about-fact div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
     .about-fact-label {
       font-size: 0.66rem;
       font-weight: 600;
@@ -404,6 +610,7 @@
       color: var(--text-light, #4a6663);
       opacity: 0.75;
     }
+
     .about-fact-val {
       font-size: 0.9rem;
       font-weight: 600;
@@ -414,37 +621,53 @@
     .mobile-notice {
       display: none;
       position: fixed;
-      left: 16px; right: 16px; bottom: 16px;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
       z-index: 8000;
       background: var(--deep, #013e37);
       color: #ffefb3;
-      border: 1px solid rgba(255,239,179,0.3);
+      border: 1px solid rgba(255, 239, 179, 0.3);
       border-radius: 14px;
       padding: 0.9rem 1rem;
       align-items: center;
       gap: 0.7rem;
       font-size: 0.8rem;
       line-height: 1.4;
-      box-shadow: 0 14px 34px rgba(0,0,0,0.35);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
     }
-    .mobile-notice i { font-size: 1.05rem; opacity: 0.85; flex-shrink: 0; }
-    .mobile-notice span { flex: 1; }
+
+    .mobile-notice i {
+      font-size: 1.05rem;
+      opacity: 0.85;
+      flex-shrink: 0;
+    }
+
+    .mobile-notice span {
+      flex: 1;
+    }
+
     .mobile-notice-close {
-      background: rgba(255,239,179,0.12);
-      border: 1px solid rgba(255,239,179,0.25);
+      background: rgba(255, 239, 179, 0.12);
+      border: 1px solid rgba(255, 239, 179, 0.25);
       color: #ffefb3;
-      width: 26px; height: 26px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       cursor: pointer;
       font-size: 0.95rem;
       line-height: 1;
       flex-shrink: 0;
     }
+
     @media (max-width: 768px) {
-      .mobile-notice { display: flex; }
+      .mobile-notice {
+        display: flex;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Nav transition overlay -->
@@ -452,14 +675,14 @@
 
   <!-- DESKTOP-RECOMMENDED NOTICE (shown on small screens only) -->
   <div class="mobile-notice" id="mobileNotice" role="status">
-  <i class="fas fa-desktop"></i>
-  <span>
-    For the best experience—smooth galleries, video demos, and interactive effects—we recommend viewing this site on a desktop or laptop. The site works on all devices.
-  </span>
-  <button class="mobile-notice-close"
-          onclick="document.getElementById('mobileNotice').remove()"
-          aria-label="Dismiss">&times;</button>
-</div>
+    <i class="fas fa-desktop"></i>
+    <span>
+      For the best experience—smooth galleries, video demos, and interactive effects—we recommend viewing this site on a
+      desktop or laptop. The site works on all devices.
+    </span>
+    <button class="mobile-notice-close" onclick="document.getElementById('mobileNotice').remove()"
+      aria-label="Dismiss">&times;</button>
+  </div>
 
   <!-- HEADER -->
   <header>
@@ -479,31 +702,32 @@
   </header>
 
   <!-- HERO -->
-    <section class="hero" id="home">
-        <div class="hero-ring"></div>
-        <div class="hero-ring"></div>
-        <div class="hero-ring"></div>
-        <div class="hero-ring"></div>
-        <div class="hero-avatar">SD</div>
-        <div class="hero-label">Computer Engineering Student &nbsp;·&nbsp; Nepal</div>
-        <h1>Shronal Duwal</h1>
-        <p class="hero-tagline">Frontend Developer &amp; Full-Stack Enthusiast crafting meaningful digital experiences with Django, C++, and modern web technologies.</p>
-        <div class="hero-divider"></div>
-        <div class="hero-btns">
-            <a href="#contact" class="btn-gold">Get In Touch</a>
-            <a href="#projects" class="btn-outline">View My Work</a>
-        </div>
-        <div class="hero-socials">
-            <a href="https://www.facebook.com/shronalduwal" target="_blank"><i class="fab fa-facebook"></i></a>
-            <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/" target="_blank"><i class="fab fa-linkedin"></i></a>
-            <a href="https://www.instagram.com/shronalduwal/" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://github.com/shronal" target="_blank"><i class="fab fa-github"></i></a>
-        </div>
-        <div class="scroll-cue">
-            <div class="scroll-arrow"></div>
-            scroll
-        </div>
-    </section>
+  <section class="hero" id="home">
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
+    <div class="hero-avatar">SD</div>
+    <div class="hero-label">Computer Engineering Student &nbsp;·&nbsp; Nepal</div>
+    <h1>Shronal Duwal</h1>
+    <p class="hero-tagline">Frontend Developer &amp; Full-Stack Enthusiast crafting meaningful digital experiences with
+      Django, C++, and modern web technologies.</p>
+    <div class="hero-divider"></div>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-gold">Get In Touch</a>
+      <a href="#projects" class="btn-outline">View My Work</a>
+    </div>
+    <div class="hero-socials">
+      <a href="https://www.facebook.com/shronalduwal" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/" target="_blank"><i class="fab fa-linkedin"></i></a>
+      <a href="https://www.instagram.com/shronalduwal/" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://github.com/shronal" target="_blank"><i class="fab fa-github"></i></a>
+    </div>
+    <div class="scroll-cue">
+      <div class="scroll-arrow"></div>
+      scroll
+    </div>
+  </section>
 
   <!-- PROJECTS -->
   <section class="projects" id="projects">
@@ -513,13 +737,87 @@
       <div class="divider"></div>
       <p class="section-subtitle">Recent work built with modern technologies and a focus on clean, functional design</p>
       <div class="projects-grid">
-        <div class="project-card reveal"><div class="project-header"><i class="fa-solid fa-user"></i></div><div class="project-content"><h3 class="project-title">The Portfolio Website</h3><p class="project-desc">A responsive portfolio website showcasing my projects and skills in web development.</p><div class="project-tech"><span class="tech-tag">JavaScript</span><span class="tech-tag">HTML/CSS</span></div><a href="https://github.com/shronal/protfolio/" target="_blank" class="project-link">View Code →</a></div></div>
-        <div class="project-card reveal"><div class="project-header" onclick="openProject('video','The Retrieval Hub','A comprehensive lost and found web application allowing users to post, search, and claim lost or found items.',['Django','PostgreSQL','HTML/CSS'],'https://github.com/shronal/retrieval_hub/','videos/laf.mp4')"><i class="fas fa-code"></i><div class="proj-view-hint"><i class="fas fa-play"></i> Watch Demo</div></div><div class="project-content"><h3 class="project-title">The Retrieval Hub</h3><p class="project-desc">A comprehensive lost and found web application allowing users to post, search, and claim lost or found items.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">HTML/CSS</span></div><a href="https://github.com/shronal/retrieval_hub/" target="_blank" class="project-link">View Code →</a></div></div>
-        <div class="project-card reveal"><div class="project-header" onclick="openProject('gallery','Hotel Vehicle Reservation','A C++ graphics-based reservation system for managing vehicle bookings in hotels with interactive GUI.',['C++','Graphics.h','DSA'],'https://github.com/shronal/reservationsystem/',['images/c++/a (1).jpg','images/c++/a (2).jpg','images/c++/a (3).jpg','images/c++/a (4).jpg','images/c++/a (5).jpg','images/c++/a (6).jpg','images/c++/a (7).jpg','images/c++/a (8).jpg','images/c++/a (9).jpg','images/c++/a (10).jpg','images/c++/a (11).jpg','images/c++/a (12).jpg','images/c++/a (13).jpg','images/c++/a (14).jpg','images/c++/a (15).jpg','images/c++/a (16).jpg','images/c++/a (17).jpg','images/c++/a (18).jpg','images/c++/a (19).jpg','images/c++/a (20).jpg','images/c++/a (21).jpg','images/c++/a (22).jpg','images/c++/a (23).jpg','images/c++/a (24).jpg','images/c++/a (25).jpg','images/c++/a (26).jpg','images/c++/a (27).jpg','images/c++/a (28).jpg','images/c++/a (29).jpg','images/c++/a (30).jpg','images/c++/a (31).jpg','images/c++/a (32).jpg','images/c++/a (33).jpg','images/c++/a (34).jpg','images/c++/a (35).jpg','images/c++/a (36).jpg','images/c++/a (37).jpg','images/c++/a (38).jpg'])"><i class="fas fa-building"></i><div class="proj-view-hint"><i class="fas fa-images"></i> View Gallery</div></div><div class="project-content"><h3 class="project-title">Hotel Vehicle Reservation</h3><p class="project-desc">A C++ graphics-based reservation system for managing vehicle bookings in hotels with interactive GUI.</p><div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics.h</span><span class="tech-tag">DSA</span></div><a href="https://github.com/shronal/reservationsystem/" target="_blank" class="project-link">View Code →</a></div></div>
-        <div class="project-card reveal"><div class="project-header" onclick="openProject('video','Tree Traversal Visualizer','An interactive DSA visualizer demonstrating binary tree traversals with graphics.h.',['C++','Graphics','DSA'],'https://github.com/shronal/tree_traversal','videos/tree.mp4')"><i class="fas fa-tree"></i><div class="proj-view-hint"><i class="fas fa-play"></i> Watch Demo</div></div><div class="project-content"><h3 class="project-title">Tree Traversal Visualizer</h3><p class="project-desc">An interactive DSA visualizer demonstrating binary tree traversals with graphics.h.</p><div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics</span><span class="tech-tag">DSA</span></div><a href="https://github.com/shronal/tree_traversal" target="_blank" class="project-link">View Code →</a></div></div>
+        <div class="project-card reveal">
+          <div class="project-header"><i class="fa-solid fa-user"></i></div>
+          <div class="project-content">
+            <h3 class="project-title">The Portfolio Website</h3>
+            <p class="project-desc">A responsive portfolio website showcasing my projects and skills in web development.
+            </p>
+            <div class="project-tech"><span class="tech-tag">JavaScript</span><span class="tech-tag">HTML/CSS</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-card reveal">
+          <div class="project-header"
+            onclick="openProject('video','The Retrieval Hub','A comprehensive lost and found web application allowing users to post, search, and claim lost or found items.',['Django','PostgreSQL','HTML/CSS'],'https://github.com/shronal/retrieval_hub/','videos/laf.mp4')">
+            <i class="fas fa-code"></i>
+            <div class="proj-view-hint"><i class="fas fa-play"></i> Watch Demo</div>
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">The Retrieval Hub</h3>
+            <p class="project-desc">A comprehensive lost and found web application allowing users to post, search, and
+              claim lost or found items.</p>
+            <div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span
+                class="tech-tag">HTML/CSS</span></div><a href="https://github.com/shronal/retrieval_hub/"
+              target="_blank" class="project-link">View Code →</a>
+          </div>
+        </div>
+        <div class="project-card reveal">
+          <div class="project-header"
+            onclick="openProject('gallery','Hotel Vehicle Reservation','A C++ graphics-based reservation system for managing vehicle bookings in hotels with interactive GUI.',['C++','Graphics.h','DSA'],'https://github.com/shronal/reservationsystem/',['images/c++/a (1).jpg','images/c++/a (2).jpg','images/c++/a (3).jpg','images/c++/a (4).jpg','images/c++/a (5).jpg','images/c++/a (6).jpg','images/c++/a (7).jpg','images/c++/a (8).jpg','images/c++/a (9).jpg','images/c++/a (10).jpg','images/c++/a (11).jpg','images/c++/a (12).jpg','images/c++/a (13).jpg','images/c++/a (14).jpg','images/c++/a (15).jpg','images/c++/a (16).jpg','images/c++/a (17).jpg','images/c++/a (18).jpg','images/c++/a (19).jpg','images/c++/a (20).jpg','images/c++/a (21).jpg','images/c++/a (22).jpg','images/c++/a (23).jpg','images/c++/a (24).jpg','images/c++/a (25).jpg','images/c++/a (26).jpg','images/c++/a (27).jpg','images/c++/a (28).jpg','images/c++/a (29).jpg','images/c++/a (30).jpg','images/c++/a (31).jpg','images/c++/a (32).jpg','images/c++/a (33).jpg','images/c++/a (34).jpg','images/c++/a (35).jpg','images/c++/a (36).jpg','images/c++/a (37).jpg','images/c++/a (38).jpg'])">
+            <i class="fas fa-building"></i>
+            <div class="proj-view-hint"><i class="fas fa-images"></i> View Gallery</div>
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">Hotel Vehicle Reservation</h3>
+            <p class="project-desc">A C++ graphics-based reservation system for managing vehicle bookings in hotels with
+              interactive GUI.</p>
+            <div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics.h</span><span
+                class="tech-tag">DSA</span></div><a href="https://github.com/shronal/reservationsystem/" target="_blank"
+              class="project-link">View Code →</a>
+          </div>
+        </div>
+        <div class="project-card reveal">
+          <div class="project-header"
+            onclick="openProject('video','Tree Traversal Visualizer','An interactive DSA visualizer demonstrating binary tree traversals with graphics.h.',['C++','Graphics','DSA'],'https://github.com/shronal/tree_traversal','videos/tree.mp4')">
+            <i class="fas fa-tree"></i>
+            <div class="proj-view-hint"><i class="fas fa-play"></i> Watch Demo</div>
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">Tree Traversal Visualizer</h3>
+            <p class="project-desc">An interactive DSA visualizer demonstrating binary tree traversals with graphics.h.
+            </p>
+            <div class="project-tech"><span class="tech-tag">C++</span><span class="tech-tag">Graphics</span><span
+                class="tech-tag">DSA</span></div><a href="https://github.com/shronal/tree_traversal" target="_blank"
+              class="project-link">View Code →</a>
+          </div>
+        </div>
         <!-- <div class="project-card reveal"><div class="project-header"><i class="fas fa-book"></i></div><div class="project-content"><h3 class="project-title">Book Exchange Platform</h3><p class="project-desc">A Django-based platform for students to donate, borrow, and exchange books within the community.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">SQLite</span><span class="tech-tag">Bootstrap</span></div><a href="https://github.com/shronal/book_exchange" target="_blank" class="project-link">View Code →</a></div></div> -->
-        <div class="project-card reveal"><div class="project-header" onclick="openProject('gallery','KhEC Event Flow','A comprehensive event management system for college-level events with admin, organizer, and user roles.',['Django','PostgreSQL','Bootstrap'],'https://github.com/shronal/khec_ems',['images/khec-event/a (1).jpg','images/khec-event/a (2).jpg','images/khec-event/a (3).jpg','images/khec-event/a (4).jpg','images/khec-event/a (5).jpg','images/khec-event/a (6).jpg','images/khec-event/a (7).jpg','images/khec-event/a (8).jpg','images/khec-event/a (9).jpg','images/khec-event/a (10).jpg'])"><i class="fas fa-calendar"></i><div class="proj-view-hint"><i class="fas fa-images"></i> View Gallery</div></div><div class="project-content"><h3 class="project-title">KhEC Event Flow</h3><p class="project-desc">A comprehensive event management system for college-level events with admin, organizer, and user roles.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">Bootstrap</span></div><a href="https://github.com/shronal/khec_ems" target="_blank" class="project-link">View Code →</a></div></div>
-        <div class="project-card reveal"><div class="project-header"><i class="fas fa-landmark"></i></div><div class="project-content"><h3 class="project-title">GovSewa</h3><p class="project-desc">An AI-powered government service guidance platform helping citizens access information, procedures, and public services efficiently.</p><div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">AI/ML</span><span class="tech-tag">PostgreSQL</span></div><a href="" target="_blank" class="project-link">Building →</a></div></div>
+        <div class="project-card reveal">
+          <div class="project-header"
+            onclick="openProject('gallery','KhEC Event Flow','A comprehensive event management system for college-level events with admin, organizer, and user roles.',['Django','PostgreSQL','Bootstrap'],'https://github.com/shronal/khec_ems',['images/khec-event/a (1).jpg','images/khec-event/a (2).jpg','images/khec-event/a (3).jpg','images/khec-event/a (4).jpg','images/khec-event/a (5).jpg','images/khec-event/a (6).jpg','images/khec-event/a (7).jpg','images/khec-event/a (8).jpg','images/khec-event/a (9).jpg','images/khec-event/a (10).jpg'])">
+            <i class="fas fa-calendar"></i>
+            <div class="proj-view-hint"><i class="fas fa-images"></i> View Gallery</div>
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">KhEC Event Flow</h3>
+            <p class="project-desc">A comprehensive event management system for college-level events with admin,
+              organizer, and user roles.</p>
+            <div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">PostgreSQL</span><span
+                class="tech-tag">Bootstrap</span></div><a href="https://github.com/shronal/khec_ems" target="_blank"
+              class="project-link">View Code →</a>
+          </div>
+        </div>
+        <div class="project-card reveal">
+          <div class="project-header"><i class="fas fa-landmark"></i></div>
+          <div class="project-content">
+            <h3 class="project-title">GovSewa</h3>
+            <p class="project-desc">An AI-powered government service guidance platform helping citizens access
+              information, procedures, and public services efficiently.</p>
+            <div class="project-tech"><span class="tech-tag">Django</span><span class="tech-tag">AI/ML</span><span
+                class="tech-tag">PostgreSQL</span></div><a href="" target="_blank" class="project-link">Building →</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -532,11 +830,29 @@
       <div class="divider"></div>
       <div class="projects-grid">
         <div class="project-card reveal">
+          <div class="project-header"><i class="fas fa-laptop-code"></i></div>
+          <div class="project-content">
+            <h3 class="project-title">Embark Innovation Hackathon 2026</h3>
+            <p class="project-desc">Selected among <strong>125 teams</strong> for the <strong>Embark Community
+                Innovation Hackathon 2026</strong> at Embark College (27–29 July). Three days of innovation,
+              collaboration, and turning ideas into solutions for real-world community challenges.</p>
+            <div class="project-tech">
+              <span class="tech-tag">Hackathon</span>
+              <span class="tech-tag">Innovation</span>
+              <span class="tech-tag">Embark College</span>
+              <span class="tech-tag">Teamwork</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-card reveal">
           <div class="project-header"><i class="fas fa-store"></i></div>
           <div class="project-content">
             <h3 class="project-title">National Exhibition</h3>
-            <p class="project-desc">Exhibited and live-demonstrated <strong>CLOCKIT!!</strong> — an interactive face puzzle game powered by webcam and MediaPipe hand tracking. Visitors played solo or multiplayer, capturing their face and solving the puzzle with pinch gestures in real time.</p>
-            <div class="project-tech"><span class="tech-tag">Exhibition</span><span class="tech-tag">Live Demo</span><span class="tech-tag">MediaPipe</span><span class="tech-tag">Computer Vision</span></div>
+            <p class="project-desc">Exhibited and live-demonstrated <strong>CLOCKIT!!</strong> — an interactive face
+              puzzle game powered by webcam and MediaPipe hand tracking. Visitors played solo or multiplayer, capturing
+              their face and solving the puzzle with pinch gestures in real time.</p>
+            <div class="project-tech"><span class="tech-tag">Exhibition</span><span class="tech-tag">Live
+                Demo</span><span class="tech-tag">MediaPipe</span><span class="tech-tag">Computer Vision</span></div>
             <a href="puzzle.html" target="_blank" class="project-link">Try CLOCKIT!! →</a>
           </div>
         </div>
@@ -544,8 +860,11 @@
           <div class="project-header"><i class="fas fa-microphone"></i></div>
           <div class="project-content">
             <h3 class="project-title">Khwopa CEEL 2026</h3>
-            <p class="project-desc">Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering — engaging with cutting-edge research and networking with engineers from across Nepal.</p>
-            <div class="project-tech"><span class="tech-tag">Networking</span><span class="tech-tag">Research</span><span class="tech-tag">Engineering</span></div>
+            <p class="project-desc">Participated in the National Conference on Computer, Electrical, Electronics and
+              Communication Engineering — engaging with cutting-edge research and networking with engineers from across
+              Nepal.</p>
+            <div class="project-tech"><span class="tech-tag">Networking</span><span
+                class="tech-tag">Research</span><span class="tech-tag">Engineering</span></div>
             <a href="https://ceel.khwopaconference.com/" target="_blank" class="project-link">Conference Site →</a>
           </div>
         </div>
@@ -565,20 +884,26 @@
 
         <!-- Global Nobel Internship -->
         <div class="timeline-item">
-          <div class="timeline-dot-wrap"><div class="t-dot"></div></div>
+          <div class="timeline-dot-wrap">
+            <div class="t-dot"></div>
+          </div>
           <div class="timeline-body">
             <div class="badge-intl"><i class="fas fa-globe"></i> International Internship</div>
             <p class="tl-date">90 Hours Completed</p>
             <p class="tl-org">Nobel Fundamentals Program &nbsp;·&nbsp; Global Nobel Internship</p>
             <h3 class="tl-title">Leadership &amp; Technical Skills Intern</h3>
             <p class="tl-desc">
-              Successfully completed the <strong>90-hour Nobel Fundamentals Internship Program</strong>, an international learner-to-leader initiative focused on developing both technical and professional leadership skills through collaborative learning and peer engagement.
+              Successfully completed the <strong>90-hour Nobel Fundamentals Internship Program</strong>, an
+              international learner-to-leader initiative focused on developing both technical and professional
+              leadership skills through collaborative learning and peer engagement.
             </p>
             <!-- <p class="tl-desc">
               Participated in interdisciplinary training sessions covering <strong>Introduction to Web Design</strong>, <strong>Pitch &amp; Presentation</strong>, <strong>Internet Troubleshooting &amp; Communication</strong>, and <strong>Leadership Development</strong>. Strengthened practical communication, teamwork, and problem-solving abilities while assisting fellow learners in mastering core concepts.
             </p> -->
             <p class="tl-desc">
-              The program emphasized leadership through mentorship, active participation, and real-world collaboration, helping build confidence in public speaking, technical understanding, and professional growth within an international learning environment.
+              The program emphasized leadership through mentorship, active participation, and real-world collaboration,
+              helping build confidence in public speaking, technical understanding, and professional growth within an
+              international learning environment.
             </p>
             <div class="timeline-tags">
               <span class="timeline-tag">Leadership</span>
@@ -593,13 +918,16 @@
 
         <!-- Placeholder internship -->
         <div class="timeline-item">
-          <div class="timeline-dot-wrap"><div class="t-dot"></div></div>
+          <div class="timeline-dot-wrap">
+            <div class="t-dot"></div>
+          </div>
           <div class="timeline-body">
             <p class="tl-date">10th May 2026</p>
             <p class="tl-org">Oasis Byte</p>
             <h3 class="tl-title">Web Development Intern</h3>
             <p class="tl-desc">Running</p>
-            <div class="timeline-tags"><span class="timeline-tag">Skill</span><span class="timeline-tag">Technology</span></div>
+            <div class="timeline-tags"><span class="timeline-tag">Skill</span><span
+                class="timeline-tag">Technology</span></div>
           </div>
         </div>
 
@@ -610,7 +938,8 @@
   <!-- WORK EXPERIENCE -->
   <section class="work-exp" id="work">
     <p class="section-label" style="text-align:center;">Work Experience</p>
-    <h2 class="section-title" style="text-align:center;color:#fff;margin-bottom:0.6rem;">Government &amp; Professional Work</h2>
+    <h2 class="section-title" style="text-align:center;color:#fff;margin-bottom:0.6rem;">Government &amp; Professional
+      Work</h2>
     <div class="divider" style="margin:0.9rem auto 2.8rem;"></div>
 
     <div class="work-cards">
@@ -623,27 +952,44 @@
           </div>
         </div>
         <p class="work-desc">
-          Appointed by the Government of Nepal to participate in the <strong style="color:rgba(255,239,179,0.75);">National Economic Census 2026</strong> — a landmark nationwide effort documenting Nepal's economic structure, workforce distribution, and business landscape. The role demanded accuracy, field discipline, and civic responsibility across more than two months of active enumeration work.
+          Appointed by the Government of Nepal to participate in the <strong
+            style="color:rgba(255,239,179,0.75);">National Economic Census 2026</strong> — a landmark nationwide effort
+          documenting Nepal's economic structure, workforce distribution, and business landscape. The role demanded
+          accuracy, field discipline, and civic responsibility across more than two months of active enumeration work.
         </p>
         <div class="work-meta">
           <div class="work-meta-item">
             <i class="fas fa-calendar-alt"></i>
-            <div><div class="work-meta-label">Start</div><div class="work-meta-val">15 April 2026</div></div>
+            <div>
+              <div class="work-meta-label">Start</div>
+              <div class="work-meta-val">15 April 2026</div>
+            </div>
           </div>
           <div class="work-meta-item">
             <i class="fas fa-calendar-check"></i>
-            <div><div class="work-meta-label">End</div><div class="work-meta-val">21 June 2026</div></div>
+            <div>
+              <div class="work-meta-label">End</div>
+              <div class="work-meta-val">21 June 2026</div>
+            </div>
           </div>
           <div class="work-meta-item">
             <i class="fas fa-clock"></i>
-            <div><div class="work-meta-label">Duration</div><div class="work-meta-val">~2.5 months</div></div>
+            <div>
+              <div class="work-meta-label">Duration</div>
+              <div class="work-meta-val">~2.5 months</div>
+            </div>
           </div>
           <div class="work-meta-item">
             <i class="fas fa-map-marker-alt"></i>
-            <div><div class="work-meta-label">Location</div><div class="work-meta-val">Nepal</div></div>
+            <div>
+              <div class="work-meta-label">Location</div>
+              <div class="work-meta-val">Nepal</div>
+            </div>
           </div>
         </div>
-        <div class="status-badge"><div class="status-dot"></div>Service Completed</div>
+        <div class="status-badge">
+          <div class="status-dot"></div>Service Completed
+        </div>
       </div>
     </div>
   </section>
@@ -658,12 +1004,16 @@
 
       <div class="cert-grid">
 
-        <div class="cert-card reveal" onclick="openCert('Government Service','National Economic Census 2026 — Enumerator Certificate','Central Bureau of Statistics, Government of Nepal','April – June 2026','fas fa-landmark','Official government appointment as a census enumerator for the National Economic Census 2026.','images/Certificates/census.jpg')">
+        <div class="cert-card reveal"
+          onclick="openCert('Government Service','National Economic Census 2026 — Enumerator Certificate','Central Bureau of Statistics, Government of Nepal','April – June 2026','fas fa-landmark','Official government appointment as a census enumerator for the National Economic Census 2026.','images/Certificates/census.jpg')">
           <div class="cert-img-wrap">
             <div class="cert-blueprint">
               <div class="cert-bp-icon"><i class="fas fa-landmark"></i></div>
               <div class="cert-bp-ribbon">Certificate of Service</div>
-              <div class="cert-bp-lines"><div class="cert-bp-line"></div><div class="cert-bp-line"></div></div>
+              <div class="cert-bp-lines">
+                <div class="cert-bp-line"></div>
+                <div class="cert-bp-line"></div>
+              </div>
             </div>
             <div class="cert-view-hint"><i class="fas fa-eye"></i> View Details</div>
           </div>
@@ -675,12 +1025,16 @@
           </div>
         </div>
 
-        <div class="cert-card reveal" onclick="openCert('International Internship','Nobel Fundamentals Program — Completion Certificate','Global Nobel Internship','2025 / 2026','fas fa-globe','Successfully completed 90 hours of the Nobel Fundamentals Internship Program covering web design, leadership, and communication.','images/Certificates/nobel.pdf')">
+        <div class="cert-card reveal"
+          onclick="openCert('International Internship','Nobel Fundamentals Program — Completion Certificate','Global Nobel Internship','2025 / 2026','fas fa-globe','Successfully completed 90 hours of the Nobel Fundamentals Internship Program covering web design, leadership, and communication.','images/Certificates/nobel.pdf')">
           <div class="cert-img-wrap">
             <div class="cert-blueprint">
               <div class="cert-bp-icon"><i class="fas fa-globe"></i></div>
               <div class="cert-bp-ribbon">Certificate of Completion</div>
-              <div class="cert-bp-lines"><div class="cert-bp-line"></div><div class="cert-bp-line"></div></div>
+              <div class="cert-bp-lines">
+                <div class="cert-bp-line"></div>
+                <div class="cert-bp-line"></div>
+              </div>
             </div>
             <div class="cert-view-hint"><i class="fas fa-eye"></i> View Details</div>
           </div>
@@ -692,12 +1046,16 @@
           </div>
         </div>
 
-        <div class="cert-card reveal" onclick="openCert('Conference','Khwopa CEEL 2026 — Participation Certificate','Khwopa Engineering College','2026','fas fa-microphone','Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering.','images/Certificates/khec-ceel.jpeg')">
+        <div class="cert-card reveal"
+          onclick="openCert('Conference','Khwopa CEEL 2026 — Participation Certificate','Khwopa Engineering College','2026','fas fa-microphone','Participated in the National Conference on Computer, Electrical, Electronics and Communication Engineering.','images/Certificates/khec-ceel.jpeg')">
           <div class="cert-img-wrap">
             <div class="cert-blueprint">
               <div class="cert-bp-icon"><i class="fas fa-microphone"></i></div>
               <div class="cert-bp-ribbon">Certificate of Participation</div>
-              <div class="cert-bp-lines"><div class="cert-bp-line"></div><div class="cert-bp-line"></div></div>
+              <div class="cert-bp-lines">
+                <div class="cert-bp-line"></div>
+                <div class="cert-bp-line"></div>
+              </div>
             </div>
             <div class="cert-view-hint"><i class="fas fa-eye"></i> View Details</div>
           </div>
@@ -709,12 +1067,16 @@
           </div>
         </div>
 
-        <div class="cert-card reveal" onclick="openCert('Exhibition','National Exhibition — CLOCK IT!! Aarohan 2.0','Khwopa Engineering College, Nepal','2026','fas fa-trophy','Recognized for exhibiting and live-demonstrating CLOCKIT!! — an interactive face puzzle project powered by webcam and MediaPipe hand tracking at a national-level exhibition.','images/Certificates/national-exhibition.jpeg')">
+        <div class="cert-card reveal"
+          onclick="openCert('Exhibition','National Exhibition — CLOCK IT!! Aarohan 2.0','Khwopa Engineering College, Nepal','2026','fas fa-trophy','Recognized for exhibiting and live-demonstrating CLOCKIT!! — an interactive face puzzle project powered by webcam and MediaPipe hand tracking at a national-level exhibition.','images/Certificates/national-exhibition.jpeg')">
           <div class="cert-img-wrap">
             <div class="cert-blueprint">
               <div class="cert-bp-icon"><i class="fas fa-trophy"></i></div>
               <div class="cert-bp-ribbon">Certificate of Exhibition</div>
-              <div class="cert-bp-lines"><div class="cert-bp-line"></div><div class="cert-bp-line"></div></div>
+              <div class="cert-bp-lines">
+                <div class="cert-bp-line"></div>
+                <div class="cert-bp-line"></div>
+              </div>
             </div>
             <div class="cert-view-hint"><i class="fas fa-eye"></i> View Details</div>
           </div>
@@ -723,6 +1085,27 @@
             <p class="cert-title">National Exhibition — Certificate of Appreciation </p>
             <p class="cert-issuer">Khwopa Engineering College, Nepal</p>
             <p class="cert-date"><i class="fas fa-calendar-alt"></i> 2026</p>
+          </div>
+        </div>
+
+        <div class="cert-card reveal"
+          onclick="openCert('Hackathon','Embark Innovation Hackathon 2026 — Certificate of Participation','Embark College','27–29 July 2026','fas fa-award','Selected among 125 teams for the 3-day Embark Community Innovation Hackathon 2026 at Embark College, turning ideas into solutions for real-world community challenges.','images/hack/embark_hack.jpeg')">
+          <div class="cert-img-wrap">
+            <div class="cert-blueprint">
+              <div class="cert-bp-icon"><i class="fas fa-award"></i></div>
+              <div class="cert-bp-ribbon">Certificate of Participation</div>
+              <div class="cert-bp-lines">
+                <div class="cert-bp-line"></div>
+                <div class="cert-bp-line"></div>
+              </div>
+            </div>
+            <div class="cert-view-hint"><i class="fas fa-eye"></i> View Details</div>
+          </div>
+          <div class="cert-body">
+            <p class="cert-type">Hackathon</p>
+            <p class="cert-title">Embark Innovation Hackathon 2026 — Participation Certificate</p>
+            <p class="cert-issuer">Embark College</p>
+            <p class="cert-date"><i class="fas fa-calendar-alt"></i> 27–29 July 2026</p>
           </div>
         </div>
 
@@ -793,8 +1176,10 @@
         <video id="proj-video" controls></video>
         <img class="cert-modal-img" id="proj-image" alt="Project screenshot" onclick="openLightbox('proj-image')">
         <div class="proj-gallery-controls" id="proj-gallery-controls">
-          <button class="proj-gallery-btn prev" onclick="galleryNav(-1, event)"><i class="fas fa-chevron-left"></i></button>
-          <button class="proj-gallery-btn next" onclick="galleryNav(1, event)"><i class="fas fa-chevron-right"></i></button>
+          <button class="proj-gallery-btn prev" onclick="galleryNav(-1, event)"><i
+              class="fas fa-chevron-left"></i></button>
+          <button class="proj-gallery-btn next" onclick="galleryNav(1, event)"><i
+              class="fas fa-chevron-right"></i></button>
           <div class="proj-gallery-counter" id="proj-gallery-counter"></div>
         </div>
       </div>
@@ -914,11 +1299,15 @@
       <div class="about-content">
         <div class="about-text reveal">
           <h3><i class="fas fa-user"></i> Who Am I?</h3>
-          <p>I'm a passionate computer engineering student from Nepal, currently pursuing my Bachelor's degree at Khwopa Engineering College — with a strong interest in web development, UI/UX design, and software engineering.</p>
+          <p>I'm a passionate computer engineering student from Nepal, currently pursuing my Bachelor's degree at Khwopa
+            Engineering College — with a strong interest in web development, UI/UX design, and software engineering.</p>
           <h3><i class="fas fa-route"></i> My Journey</h3>
-          <p>I've worked on projects from C++ desktop apps to full-stack Django systems, completed an international 90-hour leadership internship, and served as a government enumerator for Nepal's National Economic Census 2026.</p>
+          <p>I've worked on projects from C++ desktop apps to full-stack Django systems, completed an international
+            90-hour leadership internship, and served as a government enumerator for Nepal's National Economic Census
+            2026.</p>
           <h3><i class="fas fa-bullseye"></i> What Drives Me</h3>
-          <p>I'm driven by the passion to create meaningful digital solutions. I enjoy collaborating, contributing to open source, and continuously pushing my own limits — one project at a time.</p>
+          <p>I'm driven by the passion to create meaningful digital solutions. I enjoy collaborating, contributing to
+            open source, and continuously pushing my own limits — one project at a time.</p>
         </div>
         <div class="about-card-wrap">
           <div class="about-blob about-blob-1"></div>
@@ -932,7 +1321,8 @@
             <div class="about-avatar">SD</div>
             <div class="about-fact">
               <i class="fas fa-graduation-cap"></i>
-              <div><span class="about-fact-label">Education</span><span class="about-fact-val">B.E. Computer Engineering, KhEC</span></div>
+              <div><span class="about-fact-label">Education</span><span class="about-fact-val">B.E. Computer
+                  Engineering, KhEC</span></div>
             </div>
             <div class="about-fact">
               <i class="fas fa-layer-group"></i>
@@ -940,11 +1330,13 @@
             </div>
             <div class="about-fact">
               <i class="fas fa-map-marker-alt"></i>
-              <div><span class="about-fact-label">Based In</span><span class="about-fact-val">Bhaktapur, Nepal</span></div>
+              <div><span class="about-fact-label">Based In</span><span class="about-fact-val">Bhaktapur, Nepal</span>
+              </div>
             </div>
             <div class="about-fact">
               <i class="fas fa-code-branch"></i>
-              <div><span class="about-fact-label">Focus</span><span class="about-fact-val">Web Dev &amp; Software Engineering</span></div>
+              <div><span class="about-fact-label">Focus</span><span class="about-fact-val">Web Dev &amp; Software
+                  Engineering</span></div>
             </div>
           </div>
         </div>
@@ -957,15 +1349,20 @@
     <h2>Let's Work Together</h2>
     <p>I'm always open to new projects, opportunities, and collaborations. Feel free to reach out!</p>
     <div class="contact-links">
-      <a href="https://wa.me/9779861287028?text=Hi Shronal, I would like to connect with you!" target="_blank" class="contact-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="https://wa.me/9779861287028?text=Hi Shronal, I would like to connect with you!" target="_blank"
+        class="contact-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
       <a href="mailto:shronalduwal999@gmail.com" class="contact-link"><i class="fas fa-envelope"></i> Email</a>
-      <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/" target="_blank" class="contact-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
+      <a href="https://www.linkedin.com/in/shronal-d-38b0a8301/" target="_blank" class="contact-link"><i
+          class="fab fa-linkedin"></i> LinkedIn</a>
       <a href="https://github.com/shronal" target="_blank" class="contact-link"><i class="fab fa-github"></i> GitHub</a>
     </div>
   </section>
 
-  <footer><p>&copy; 2026 Shronal Duwal &middot; All rights reserved &middot; Built with HTML, CSS &amp; JavaScript</p></footer>
+  <footer>
+    <p>&copy; 2026 Shronal Duwal &middot; All rights reserved &middot; Built with HTML, CSS &amp; JavaScript</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
+
 </html>

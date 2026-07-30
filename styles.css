@@ -37,6 +37,15 @@
       transition: background 0.4s ease, color 0.4s ease;
       line-height: 1.6;
       overflow-x: hidden;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    img {
+      -webkit-user-drag: none;
+      user-drag: none;
     }
 
     /* ── PAGE TRANSITION OVERLAY ── */
