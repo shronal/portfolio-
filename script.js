@@ -62,14 +62,33 @@
       toggle.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
     });
 
-    // ── SMOOTH SCROLL with flash transition
+    // ── HEADER STICKY EFFECTS ON SCROLL ──
+    const header = document.querySelector('header');
+    if (header) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 30) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      }, { passive: true });
+    }
+
+    // ── SMOOTH SCROLL with header offset & flash transition
     const overlay = document.getElementById('page-overlay');
     function smoothScrollTo(target) {
       overlay.classList.add('flash');
+      const headerOffset = 70;
+      const elementPosition = target.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
       setTimeout(() => {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => overlay.classList.remove('flash'), 300);
-      }, 150);
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        setTimeout(() => overlay.classList.remove('flash'), 350);
+      }, 100);
     }
 
     document.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -97,7 +116,7 @@
     }, { threshold: 0.35 });
     sections.forEach(s => sectionObserver.observe(s));
 
-    // ── SCROLL REVEAL
+    // ── SCROLL REVEAL (Auto-animates cards and section headers as you scroll)
     const revealObs = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) {
@@ -105,8 +124,12 @@
           revealObs.unobserve(e.target);
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    
+    document.querySelectorAll('.reveal, section .section-title, section .section-subtitle, .project-card, .cert-card, .skill-box, .work-card').forEach(el => {
+      el.classList.add('reveal');
+      revealObs.observe(el);
+    });
 
     // ── TIMELINE REVEAL
     const tlObs = new IntersectionObserver(entries => {
