@@ -2,56 +2,6 @@
 (function () {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- inject required styles ---------- */
-  const style = document.createElement('style');
-  style.textContent = `
-    .project-card, .cert-card {
-      position: relative;
-      overflow: hidden;
-      transform-style: preserve-3d;
-      will-change: transform;
-      transition: transform 0.35s cubic-bezier(.22,1,.36,1), box-shadow 0.35s ease;
-    }
-    .hover-glow {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0;
-      background: radial-gradient(
-        360px circle at var(--gx, 50%) var(--gy, 50%),
-        rgba(255, 239, 179, 0.16),
-        transparent 60%
-      );
-      transition: opacity 0.4s ease;
-      z-index: 1;
-    }
-    .project-card:hover .hover-glow,
-    .cert-card:hover .hover-glow {
-      opacity: 1;
-    }
-    .project-card:hover, .cert-card:hover {
-      box-shadow: 0 18px 40px rgba(1, 30, 27, 0.25);
-    }
-
-    .magnetic {
-      display: inline-block;
-      transition: transform 0.25s cubic-bezier(.22,1,.36,1);
-      will-change: transform;
-    }
-
-    .link-sweep {
-      position: relative;
-      background-image: linear-gradient(currentColor, currentColor);
-      background-position: 0 100%;
-      background-repeat: no-repeat;
-      background-size: 0% 1.5px;
-      transition: background-size 0.35s cubic-bezier(.22,1,.36,1);
-    }
-    .link-sweep:hover { background-size: 100% 1.5px; }
-  `;
-  document.head.appendChild(style);
-
   /* ---------- 1 & 2. Spotlight glow + 3D tilt on cards ---------- */
   const cards = document.querySelectorAll('.project-card, .cert-card');
 
@@ -211,6 +161,12 @@
     function closeCert() {
       document.getElementById('certModal').classList.remove('open');
       document.body.style.overflow = '';
+    }
+
+    // ── MOBILE NOTICE
+    function closeMobileNotice() {
+      const notice = document.getElementById('mobileNotice');
+      if (notice) notice.remove();
     }
 
     // ── IMAGE LIGHTBOX (click a certificate or project image to view full size)
